@@ -1,0 +1,24 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Static files (processed images)
+static/results/*.png
+static/results/*.jpg
+static/results/*.jpeg
+static/results/*.webp
+
+# Keep directory but ignore files
+!static/results/.gitkeep
+
