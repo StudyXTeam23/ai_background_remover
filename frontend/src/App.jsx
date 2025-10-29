@@ -33,7 +33,7 @@ const translations = {
     name: 'English',
     flag: '🇺🇸',
     header: {
-      title: 'PixelPure',
+      title: 'AI Background Remover',
     },
     home: {
       heroTitle: 'Remove Instantly. AI Powered.',
@@ -42,6 +42,14 @@ const translations = {
       uploadHint: 'Supported: JPG, PNG, WEBP (Max 16MB)',
       processing: 'Processing image...',
       processingHint: 'This may take a few seconds',
+    },
+    errors: {
+      invalidFileType: 'Please select a valid image file (JPG, PNG, or WEBP)',
+      fileTooLarge: 'File is too large. Maximum size is 16MB',
+      processingFailed: 'Failed to process image. Please try again',
+      networkError: 'Network error. Please check your connection',
+      serverError: 'Server error. Please try again later',
+      apiKeyMissing: 'API key is not configured. Please contact administrator',
     },
     howItWorks: {
       title: 'How to remove image background',
@@ -54,14 +62,14 @@ const translations = {
     },
     features: {
       title: 'What can AI Background Remover do for you?',
-      subtitle: 'PixelPure helps you create stunning visuals for any purpose, whether it\'s for your online store, social media, or personal projects. See the difference for yourself.',
+      subtitle: 'AI Background Remover helps you create stunning visuals for any purpose, whether it\'s for your online store, social media, or personal projects. See the difference for yourself.',
       ecommerceTitle: 'For E-commerce',
       ecommerceDesc: 'Create professional product photos with clean, white backgrounds that sell. Increase your conversion rates by presenting your products in the best possible light.',
       creativesTitle: 'For Creatives',
       creativesDesc: 'Isolate subjects from their background to create compelling compositions and designs. Perfect for posters, social media posts, and personal art projects.',
     },
     whyChoose: {
-      title: 'Why choose PixelPure?',
+      title: 'Why choose AI Background Remover?',
       quality: 'High-Quality Results',
       qualityDesc: 'Our AI is trained to handle complex edges like hair and fur, delivering crisp cutouts every time.',
       free: 'Completely Free',
@@ -77,8 +85,8 @@ const translations = {
       a2: 'You can upload images up to 12 megapixels. The downloaded image will have the same resolution as the original.',
       q3: 'How do you handle my privacy?',
       a3: 'We take your privacy very seriously. All uploaded images are automatically deleted from our servers within one hour of processing.',
-      q4: 'Is PixelPure really free?',
-      a4: 'Yes, PixelPure is completely free for personal and commercial use. There are no hidden costs or usage limits.',
+      q4: 'Is AI Background Remover really free?',
+      a4: 'Yes, AI Background Remover is completely free for personal and commercial use. There are no hidden costs or usage limits.',
     },
     result: {
       title: 'Processing Complete!',
@@ -90,7 +98,7 @@ const translations = {
       tip: 'The downloaded image will have a transparent background in PNG format, perfect for use in design projects, presentations, or online stores.',
     },
     footer: {
-      copyright: '© 2025 PixelPure. All Rights Reserved.',
+      copyright: '© 2025 AI Background Remover. All Rights Reserved.',
       privacy: 'Privacy Policy',
       terms: 'Terms of Service',
     },
@@ -99,7 +107,7 @@ const translations = {
     name: '中文',
     flag: '🇨🇳',
     header: {
-      title: 'PixelPure',
+      title: 'AI 背景移除',
     },
     home: {
       heroTitle: '即刻移除，AI 驱动',
@@ -108,6 +116,14 @@ const translations = {
       uploadHint: '支持格式：JPG、PNG、WEBP（最大 16MB）',
       processing: '正在处理图片...',
       processingHint: '这可能需要几秒钟',
+    },
+    errors: {
+      invalidFileType: '请选择有效的图片文件（JPG、PNG 或 WEBP）',
+      fileTooLarge: '文件过大，最大支持 16MB',
+      processingFailed: '图片处理失败，请重试',
+      networkError: '网络错误，请检查网络连接',
+      serverError: '服务器错误，请稍后重试',
+      apiKeyMissing: 'API 密钥未配置，请联系管理员',
     },
     howItWorks: {
       title: '如何去除图片背景',
@@ -120,14 +136,14 @@ const translations = {
     },
     features: {
       title: 'AI 背景移除能为你做什么？',
-      subtitle: 'PixelPure 帮助你为任何目的创建令人惊叹的视觉效果，无论是在线商店、社交媒体还是个人项目。亲自体验差异。',
+      subtitle: 'AI 背景移除帮助你为任何目的创建令人惊叹的视觉效果，无论是在线商店、社交媒体还是个人项目。亲自体验差异。',
       ecommerceTitle: '电商应用',
       ecommerceDesc: '创建具有干净白色背景的专业产品照片。通过以最佳方式展示产品来提高转化率。',
       creativesTitle: '创意设计',
       creativesDesc: '将主体从背景中分离，创建引人注目的构图和设计。完美适用于海报、社交媒体帖子和个人艺术项目。',
     },
     whyChoose: {
-      title: '为什么选择 PixelPure？',
+      title: '为什么选择 AI 背景移除？',
       quality: '高质量结果',
       qualityDesc: '我们的 AI 经过训练，可以处理像头发和毛发这样的复杂边缘，每次都能提供清晰的剪裁。',
       free: '完全免费',
@@ -143,8 +159,8 @@ const translations = {
       a2: '您可以上传最大 12 百万像素的图片。下载的图片将保持与原始图片相同的分辨率。',
       q3: '如何处理我的隐私？',
       a3: '我们非常重视您的隐私。所有上传的图片将在处理后一小时内自动从我们的服务器中删除。',
-      q4: 'PixelPure 真的免费吗？',
-      a4: '是的，PixelPure 完全免费供个人和商业使用。没有隐藏费用或使用限制。',
+      q4: 'AI 背景移除真的免费吗？',
+      a4: '是的，AI 背景移除完全免费供个人和商业使用。没有隐藏费用或使用限制。',
     },
     result: {
       title: '处理完成！',
@@ -156,7 +172,7 @@ const translations = {
       tip: '下载的图片将采用 PNG 格式的透明背景，非常适合用于设计项目、演示文稿或在线商店。',
     },
     footer: {
-      copyright: '© 2025 PixelPure。保留所有权利。',
+      copyright: '© 2025 AI 背景移除。保留所有权利。',
       privacy: '隐私政策',
       terms: '服务条款',
     },
@@ -165,7 +181,7 @@ const translations = {
     name: 'Español',
     flag: '🇪🇸',
     header: {
-      title: 'PixelPure',
+      title: 'Eliminar Fondo IA',
     },
     home: {
       heroTitle: 'Elimina Instantáneamente. Con IA.',
@@ -174,6 +190,14 @@ const translations = {
       uploadHint: 'Soportados: JPG, PNG, WEBP (Máx 16MB)',
       processing: 'Procesando imagen...',
       processingHint: 'Esto puede tardar unos segundos',
+    },
+    errors: {
+      invalidFileType: 'Seleccione un archivo de imagen válido (JPG, PNG o WEBP)',
+      fileTooLarge: 'Archivo demasiado grande. Tamaño máximo 16MB',
+      processingFailed: 'Error al procesar la imagen. Intente de nuevo',
+      networkError: 'Error de red. Verifique su conexión',
+      serverError: 'Error del servidor. Intente más tarde',
+      apiKeyMissing: 'La clave API no está configurada. Contacte al administrador',
     },
     howItWorks: {
       title: 'Cómo eliminar el fondo de la imagen',
@@ -186,14 +210,14 @@ const translations = {
     },
     features: {
       title: '¿Qué puede hacer el Eliminador de Fondos IA por ti?',
-      subtitle: 'PixelPure te ayuda a crear visuales impresionantes para cualquier propósito, ya sea para tu tienda online, redes sociales o proyectos personales.',
+      subtitle: 'Eliminar Fondo IA te ayuda a crear visuales impresionantes para cualquier propósito, ya sea para tu tienda online, redes sociales o proyectos personales.',
       ecommerceTitle: 'Para E-commerce',
       ecommerceDesc: 'Crea fotos de productos profesionales con fondos blancos limpios que venden. Aumenta tus tasas de conversión presentando tus productos de la mejor manera.',
       creativesTitle: 'Para Creativos',
       creativesDesc: 'Aísla sujetos de su fondo para crear composiciones y diseños convincentes. Perfecto para pósters, publicaciones en redes sociales y proyectos artísticos personales.',
     },
     whyChoose: {
-      title: '¿Por qué elegir PixelPure?',
+      title: '¿Por qué elegir Eliminar Fondo IA?',
       quality: 'Resultados de Alta Calidad',
       qualityDesc: 'Nuestra IA está entrenada para manejar bordes complejos como cabello y pelaje, ofreciendo recortes nítidos en todo momento.',
       free: 'Completamente Gratis',
@@ -209,8 +233,8 @@ const translations = {
       a2: 'Puedes subir imágenes de hasta 12 megapíxeles. La imagen descargada tendrá la misma resolución que la original.',
       q3: '¿Cómo manejan mi privacidad?',
       a3: 'Tomamos tu privacidad muy en serio. Todas las imágenes subidas se eliminan automáticamente de nuestros servidores dentro de una hora después del procesamiento.',
-      q4: '¿PixelPure es realmente gratis?',
-      a4: 'Sí, PixelPure es completamente gratis para uso personal y comercial. No hay costos ocultos ni límites de uso.',
+      q4: '¿Eliminar Fondo IA es realmente gratis?',
+      a4: 'Sí, Eliminar Fondo IA es completamente gratis para uso personal y comercial. No hay costos ocultos ni límites de uso.',
     },
     result: {
       title: '¡Procesamiento Completo!',
@@ -222,7 +246,7 @@ const translations = {
       tip: 'La imagen descargada tendrá un fondo transparente en formato PNG, perfecta para proyectos de diseño, presentaciones o tiendas online.',
     },
     footer: {
-      copyright: '© 2025 PixelPure. Todos los derechos reservados.',
+      copyright: '© 2025 Eliminar Fondo IA. Todos los derechos reservados.',
       privacy: 'Política de Privacidad',
       terms: 'Términos de Servicio',
     },
@@ -231,7 +255,7 @@ const translations = {
     name: 'Français',
     flag: '🇫🇷',
     header: {
-      title: 'PixelPure',
+      title: 'Supprimer Fond IA',
     },
     home: {
       heroTitle: 'Supprimez Instantanément. Propulsé par l\'IA.',
@@ -240,6 +264,14 @@ const translations = {
       uploadHint: 'Pris en charge: JPG, PNG, WEBP (Max 16 Mo)',
       processing: 'Traitement de l\'image...',
       processingHint: 'Cela peut prendre quelques secondes',
+    },
+    errors: {
+      invalidFileType: 'Veuillez sélectionner un fichier image valide (JPG, PNG ou WEBP)',
+      fileTooLarge: 'Fichier trop volumineux. Taille maximale 16 Mo',
+      processingFailed: 'Échec du traitement de l\'image. Réessayez',
+      networkError: 'Erreur réseau. Vérifiez votre connexion',
+      serverError: 'Erreur serveur. Réessayez plus tard',
+      apiKeyMissing: 'La clé API n\'est pas configurée. Contactez l\'administrateur',
     },
     howItWorks: {
       title: 'Comment supprimer l\'arrière-plan de l\'image',
@@ -252,14 +284,14 @@ const translations = {
     },
     features: {
       title: 'Que peut faire le Suppresseur d\'Arrière-plan IA pour vous?',
-      subtitle: 'PixelPure vous aide à créer des visuels époustouflants pour n\'importe quel usage, que ce soit pour votre boutique en ligne, les réseaux sociaux ou des projets personnels.',
+      subtitle: 'Supprimer Fond IA vous aide à créer des visuels époustouflants pour n\'importe quel usage, que ce soit pour votre boutique en ligne, les réseaux sociaux ou des projets personnels.',
       ecommerceTitle: 'Pour l\'E-commerce',
       ecommerceDesc: 'Créez des photos de produits professionnelles avec des arrière-plans blancs propres qui vendent. Augmentez vos taux de conversion en présentant vos produits sous leur meilleur jour.',
       creativesTitle: 'Pour les Créatifs',
       creativesDesc: 'Isolez les sujets de leur arrière-plan pour créer des compositions et des designs convaincants. Parfait pour les affiches, les publications sur les réseaux sociaux et les projets artistiques personnels.',
     },
     whyChoose: {
-      title: 'Pourquoi choisir PixelPure?',
+      title: 'Pourquoi choisir Supprimer Fond IA?',
       quality: 'Résultats de Haute Qualité',
       qualityDesc: 'Notre IA est formée pour gérer des bords complexes comme les cheveux et la fourrure, offrant des découpes nettes à chaque fois.',
       free: 'Entièrement Gratuit',
@@ -275,8 +307,8 @@ const translations = {
       a2: 'Vous pouvez télécharger des images jusqu\'à 12 mégapixels. L\'image téléchargée aura la même résolution que l\'original.',
       q3: 'Comment gérez-vous ma confidentialité?',
       a3: 'Nous prenons votre confidentialité très au sérieux. Toutes les images téléchargées sont automatiquement supprimées de nos serveurs dans l\'heure suivant le traitement.',
-      q4: 'PixelPure est-il vraiment gratuit?',
-      a4: 'Oui, PixelPure est entièrement gratuit pour un usage personnel et commercial. Il n\'y a pas de coûts cachés ni de limites d\'utilisation.',
+      q4: 'Supprimer Fond IA est-il vraiment gratuit?',
+      a4: 'Oui, Supprimer Fond IA est entièrement gratuit pour un usage personnel et commercial. Il n\'y a pas de coûts cachés ni de limites d\'utilisation.',
     },
     result: {
       title: 'Traitement Terminé!',
@@ -288,7 +320,7 @@ const translations = {
       tip: 'L\'image téléchargée aura un arrière-plan transparent au format PNG, parfaite pour les projets de design, les présentations ou les boutiques en ligne.',
     },
     footer: {
-      copyright: '© 2025 PixelPure. Tous droits réservés.',
+      copyright: '© 2025 Supprimer Fond IA. Tous droits réservés.',
       privacy: 'Politique de Confidentialité',
       terms: 'Conditions de Service',
     },
@@ -297,7 +329,7 @@ const translations = {
     name: '日本語',
     flag: '🇯🇵',
     header: {
-      title: 'PixelPure',
+      title: 'AI背景除去',
     },
     home: {
       heroTitle: '即座に削除。AIパワー。',
@@ -306,6 +338,14 @@ const translations = {
       uploadHint: '対応形式：JPG、PNG、WEBP（最大16MB）',
       processing: '画像を処理中...',
       processingHint: '数秒かかる場合があります',
+    },
+    errors: {
+      invalidFileType: '有効な画像ファイルを選択してください（JPG、PNG、WEBP）',
+      fileTooLarge: 'ファイルが大きすぎます。最大16MBまで',
+      processingFailed: '画像処理に失敗しました。もう一度お試しください',
+      networkError: 'ネットワークエラー。接続を確認してください',
+      serverError: 'サーバーエラー。後でもう一度お試しください',
+      apiKeyMissing: 'APIキーが設定されていません。管理者に連絡してください',
     },
     howItWorks: {
       title: '画像の背景を削除する方法',
@@ -318,14 +358,14 @@ const translations = {
     },
     features: {
       title: 'AI背景除去ツールがあなたのためにできること',
-      subtitle: 'PixelPureは、オンラインストア、ソーシャルメディア、個人プロジェクトなど、あらゆる目的で素晴らしいビジュアルを作成するのに役立ちます。',
+      subtitle: 'AI背景除去は、オンラインストア、ソーシャルメディア、個人プロジェクトなど、あらゆる目的で素晴らしいビジュアルを作成するのに役立ちます。',
       ecommerceTitle: 'Eコマース向け',
       ecommerceDesc: 'クリーンな白い背景でプロフェッショナルな商品写真を作成します。最高の形で商品を提示することで、コンバージョン率を向上させます。',
       creativesTitle: 'クリエイター向け',
       creativesDesc: '背景から被写体を分離して、魅力的な構図とデザインを作成します。ポスター、ソーシャルメディアの投稿、個人的なアートプロジェクトに最適です。',
     },
     whyChoose: {
-      title: 'PixelPureを選ぶ理由',
+      title: 'AI背景除去を選ぶ理由',
       quality: '高品質な結果',
       qualityDesc: '当社のAIは、髪や毛皮のような複雑なエッジを処理するようにトレーニングされており、毎回鮮明なカットアウトを提供します。',
       free: '完全無料',
@@ -341,8 +381,8 @@ const translations = {
       a2: '最大12メガピクセルの画像をアップロードできます。ダウンロードされた画像は、元の画像と同じ解像度になります。',
       q3: 'プライバシーをどのように扱いますか？',
       a3: 'お客様のプライバシーを非常に重視しています。アップロードされたすべての画像は、処理後1時間以内に当社のサーバーから自動的に削除されます。',
-      q4: 'PixelPureは本当に無料ですか？',
-      a4: 'はい、PixelPureは個人および商用利用において完全に無料です。隠れたコストや使用制限はありません。',
+      q4: 'AI背景除去は本当に無料ですか？',
+      a4: 'はい、AI背景除去は個人および商用利用において完全に無料です。隠れたコストや使用制限はありません。',
     },
     result: {
       title: '処理完了！',
@@ -354,7 +394,7 @@ const translations = {
       tip: 'ダウンロードされた画像は、PNG形式の透明な背景を持ち、デザインプロジェクト、プレゼンテーション、オンラインストアでの使用に最適です。',
     },
     footer: {
-      copyright: '© 2025 PixelPure。無断転載を禁じます。',
+      copyright: '© 2025 AI背景除去。無断転載を禁じます。',
       privacy: 'プライバシーポリシー',
       terms: '利用規約',
     },
@@ -362,7 +402,7 @@ const translations = {
 };
 
 /**
- * PixelPure - AI Background Remover
+ * AI Background Remover
  * 单文件 React 应用
  * 
  * 组件结构:
@@ -401,7 +441,7 @@ function Header({ onLogoClick, language, setLanguage, translations }) {
     setLanguage(lang);
     setIsLangMenuOpen(false);
     // 保存到 localStorage
-    localStorage.setItem('pixelpure-language', lang);
+    localStorage.setItem('ai-bg-remover-language', lang);
   };
 
   return (
@@ -427,7 +467,7 @@ function Header({ onLogoClick, language, setLanguage, translations }) {
             >
               <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" />
             </svg>
-            <h2 className="text-text-main text-xl font-semibold">PixelPure</h2>
+            <h2 className="text-text-main text-xl font-semibold">AI BG Remover</h2>
           </div>
 
           {/* 右侧工具栏 */}
@@ -514,6 +554,34 @@ function HomePage({ isLoading, setIsLoading, setOriginalImage, setProcessedImage
  */
 function HeroUploader({ isLoading, setIsLoading, setOriginalImage, setProcessedImage, setError, setView, t }) {
   const fileInputRef = React.useRef(null);
+  const [errorMessage, setErrorMessage] = React.useState(null);
+
+  /**
+   * 根据错误类型返回友好的错误消息
+   */
+  const getErrorMessage = (error) => {
+    const message = error.message || error.detail || '';
+    
+    // 检查特定错误类型
+    if (message.includes('API key') || message.includes('AI302_API_KEY')) {
+      return t.errors.apiKeyMissing;
+    }
+    if (message.includes('too large') || message.includes('16MB')) {
+      return t.errors.fileTooLarge;
+    }
+    if (message.includes('network') || message.includes('connect')) {
+      return t.errors.networkError;
+    }
+    if (message.includes('timeout') || message.includes('timed out')) {
+      return t.errors.serverError;
+    }
+    if (message.includes('503') || message.includes('504') || message.includes('500')) {
+      return t.errors.serverError;
+    }
+    
+    // 默认错误消息
+    return t.errors.processingFailed;
+  };
 
   /**
    * 核心文件处理逻辑 - 按照设计规范的 8 个步骤
@@ -522,9 +590,19 @@ function HeroUploader({ isLoading, setIsLoading, setOriginalImage, setProcessedI
     const file = event.target.files[0];
     if (!file) return;
 
+    // 清除之前的错误
+    setErrorMessage(null);
+
     // 验证文件类型
     if (!file.type.startsWith('image/')) {
-      alert(t.home.uploadPrompt + '!');
+      setErrorMessage(t.errors.invalidFileType);
+      return;
+    }
+
+    // 验证文件大小 (16MB)
+    const MAX_SIZE = 16 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      setErrorMessage(t.errors.fileTooLarge);
       return;
     }
 
@@ -532,6 +610,7 @@ function HeroUploader({ isLoading, setIsLoading, setOriginalImage, setProcessedI
       // 步骤 1: 开始加载
       setIsLoading(true);
       setError(null);
+      setErrorMessage(null);
       console.log('📤 开始上传:', file.name);
 
       // 步骤 2: 创建本地预览 URL
@@ -555,8 +634,8 @@ function HeroUploader({ isLoading, setIsLoading, setOriginalImage, setProcessedI
       console.log('📥 响应状态:', response.status);
       
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-        throw new Error(errorData.error || `HTTP ${response.status}`);
+        const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+        throw errorData;
       }
 
       const data = await response.json();
@@ -573,8 +652,9 @@ function HeroUploader({ isLoading, setIsLoading, setOriginalImage, setProcessedI
 
     } catch (err) {
       console.error('❌ 错误:', err);
-      setError(err.message || 'Failed to process image');
-      alert(`处理失败: ${err.message}\n\n请检查:\n1. 后端服务是否运行 (python backend/main.py)\n2. API 密钥是否配置正确\n3. 网络连接是否正常`);
+      const friendlyMessage = getErrorMessage(err);
+      setErrorMessage(friendlyMessage);
+      setError(err.message || err.detail || 'Failed to process image');
     } finally {
       // 步骤 8: 结束加载
       setIsLoading(false);
@@ -606,6 +686,27 @@ function HeroUploader({ isLoading, setIsLoading, setOriginalImage, setProcessedI
       </h2>
       
       <div className="mt-10 max-w-2xl mx-auto">
+        {/* 错误提示框 */}
+        {errorMessage && (
+          <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3 animate-shake">
+            <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+            <div className="flex-1 text-left">
+              <p className="text-red-800 font-medium">{errorMessage}</p>
+            </div>
+            <button 
+              onClick={() => setErrorMessage(null)}
+              className="text-red-400 hover:text-red-600 transition-colors"
+              aria-label="关闭"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        )}
+
         {/* 文件上传区域 */}
         <div 
           className={`drag-area flex flex-col items-center justify-center h-64 rounded-lg bg-white p-8 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-primary'}`}
@@ -932,7 +1033,7 @@ function ResultPage({ originalImage, processedImage, onUploadNew, t }) {
             <div>
               <a
                 href={processedImage}
-                download="pixelpure-removed-bg.png"
+                download="ai-bg-remover-result.png"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block bg-primary text-white font-semibold py-3 px-10 rounded-xl hover:bg-opacity-90 transition-opacity shadow-lg"
@@ -1035,6 +1136,17 @@ const GlobalStyles = () => (
       animation: spin 1s linear infinite;
     }
 
+    /* 错误提示摇晃动画 */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+      20%, 40%, 60%, 80% { transform: translateX(4px); }
+    }
+
+    .animate-shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
     /* 平滑过渡 */
     * {
       transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -1057,7 +1169,7 @@ function App() {
   
   // 从 localStorage 加载保存的语言，默认为英文
   const [language, setLanguage] = useState(() => {
-    const saved = localStorage.getItem('pixelpure-language');
+    const saved = localStorage.getItem('ai-bg-remover-language');
     return saved && translations[saved] ? saved : 'en';
   });
   

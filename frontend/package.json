@@ -1,7 +1,7 @@
 {
-  "name": "pixelpure-frontend",
+  "name": "ai-background-remover-frontend",
   "version": "1.0.0",
-  "description": "PixelPure AI Background Remover - Frontend",
+  "description": "AI Background Remover - Frontend",
   "private": true,
   "scripts": {
     "start": "PORT=18180 BROWSER=none react-scripts start",
