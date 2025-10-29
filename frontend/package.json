@@ -6,20 +6,34 @@
   "scripts": {
     "start": "PORT=18180 BROWSER=none react-scripts start",
     "start:win": "set PORT=18180 && react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && react-snap",
+    "build:no-snap": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+  },
+  "reactSnap": {
+    "inlineCss": true,
+    "minifyHtml": {
+      "collapseWhitespace": true,
+      "removeComments": true
+    },
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox"
+    ]
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "lucide-react": "^0.294.0"
+    "lucide-react": "^0.294.0",
+    "react-helmet-async": "^2.0.4"
   },
   "devDependencies": {
     "tailwindcss": "^3.3.5",
     "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.32"
+    "postcss": "^8.4.32",
+    "react-snap": "^1.23.0"
   },
   "eslintConfig": {
     "extends": [

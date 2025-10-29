@@ -1,0 +1,15 @@
+# robots.txt for AI Background Remover
+
+# Allow all bots to crawl the site
+User-agent: *
+Allow: /
+
+# Disallow processing images (to save crawl budget)
+Disallow: /static/results/
+
+# Sitemap location
+Sitemap: https://your-domain.com/sitemap.xml
+
+# Crawl rate limit (optional, for considerate crawling)
+Crawl-delay: 1
+

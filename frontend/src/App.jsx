@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import test1Image from './test1.png';
 import test2Image from './test2.png';
+import SEO from './SEO';
 
 // ============================================================================
 // API 配置 - 自动检测运行环境
@@ -753,7 +754,7 @@ function HowItWorks({ t }) {
   const steps = [
     {
       icon: (
-        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
         </svg>
       ),
@@ -762,7 +763,7 @@ function HowItWorks({ t }) {
     },
     {
       icon: (
-        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       ),
@@ -771,7 +772,7 @@ function HowItWorks({ t }) {
     },
     {
       icon: (
-        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
         </svg>
       ),
@@ -781,20 +782,20 @@ function HowItWorks({ t }) {
   ];
 
   return (
-    <section className="py-20 lg:py-24 bg-white">
+    <section className="py-20 lg:py-24 bg-white" aria-labelledby="how-it-works-heading">
       <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-text-main">
+        <h2 id="how-it-works-heading" className="text-3xl md:text-4xl font-bold text-center text-text-main">
           {t.howItWorks.title}
         </h2>
-        <div className="mt-12 grid md:grid-cols-3 gap-12 text-center">
+        <ol className="mt-12 grid md:grid-cols-3 gap-12 text-center list-none">
           {steps.map((step, index) => (
-            <div key={index} className="flex flex-col items-center">
-              <div className="text-primary">{step.icon}</div>
+            <li key={index} className="flex flex-col items-center">
+              <div className="text-primary" aria-hidden="true">{step.icon}</div>
               <h3 className="mt-4 text-xl font-semibold text-text-main">{step.title}</h3>
               <p className="mt-2 text-text-secondary">{step.description}</p>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   );
@@ -818,44 +819,52 @@ function Features({ t }) {
 
         <div className="mt-16 space-y-20">
           {/* E-commerce 示例 */}
-          <div className="flex flex-col md:flex-row items-center gap-12">
+          <article className="flex flex-col md:flex-row items-center gap-12">
             <div className="md:w-1/2">
               <h3 className="text-2xl md:text-3xl font-bold text-text-main">{t.features.ecommerceTitle}</h3>
               <p className="mt-4 text-lg text-text-secondary">
                 {t.features.ecommerceDesc}
               </p>
             </div>
-            <div className="md:w-1/2">
+            <figure className="md:w-1/2">
               <div className="relative w-full aspect-square rounded-lg shadow-lg border border-gray-200 overflow-hidden">
                 {/* 棋盘格背景 - 展示透明效果 */}
-                <div className="absolute inset-0 checkerboard-bg"></div>
+                <div className="absolute inset-0 checkerboard-bg" aria-hidden="true"></div>
                 <img 
                   src={test1Image} 
-                  alt="E-commerce product example with transparent background" 
+                  alt="Professional product photo with clean white background removed - perfect for e-commerce stores and online shops" 
+                  loading="lazy"
+                  width="800"
+                  height="800"
                   className="relative w-full h-full object-contain p-8"
                 />
               </div>
-            </div>
-          </div>
+              <figcaption className="sr-only">E-commerce product example with transparent background</figcaption>
+            </figure>
+          </article>
 
           {/* Creatives 示例 */}
-          <div className="flex flex-col md:flex-row-reverse items-center gap-12">
+          <article className="flex flex-col md:flex-row-reverse items-center gap-12">
             <div className="md:w-1/2">
               <h3 className="text-2xl md:text-3xl font-bold text-text-main">{t.features.creativesTitle}</h3>
               <p className="mt-4 text-lg text-text-secondary">
                 {t.features.creativesDesc}
               </p>
             </div>
-            <div className="md:w-1/2">
+            <figure className="md:w-1/2">
               <div className="w-full aspect-video rounded-lg shadow-lg overflow-hidden bg-white border border-gray-200">
                 <img 
                   src={test2Image} 
-                  alt="Creative example with background removed" 
+                  alt="Creative design example showing subject isolated from background - ideal for posters and social media" 
+                  loading="lazy"
+                  width="1200"
+                  height="675"
                   className="w-full h-full object-cover"
                 />
               </div>
-            </div>
-          </div>
+              <figcaption className="sr-only">Creative example with background removed</figcaption>
+            </figure>
+          </article>
         </div>
       </div>
     </section>
@@ -1217,6 +1226,7 @@ function App() {
   // ========================================
   return (
     <>
+      <SEO language={language} translations={translations} />
       <GlobalStyles />
       <div className="min-h-screen bg-background-light font-display flex flex-col">
         {/* Header 组件 */}
