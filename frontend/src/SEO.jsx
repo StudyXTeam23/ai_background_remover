@@ -67,7 +67,7 @@ const SEO = ({ language, translations }) => {
       <meta name="twitter:description" content={currentSEO.description} />
       
       {/* 当前语言的canonical链接 */}
-      <link rel="canonical" href={`https://your-domain.com/${language !== 'en' ? '?lang=' + language : ''}`} />
+      <link rel="canonical" href={`https://bg.airemover.im/${language !== 'en' ? '?lang=' + language : ''}`} />
     </Helmet>
   );
 };
