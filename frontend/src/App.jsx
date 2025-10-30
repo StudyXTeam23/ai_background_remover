@@ -530,7 +530,7 @@ function Header({ onLogoClick, language, setLanguage, translations }) {
 /**
  * HomePage - 主着陆页
  */
-function HomePage({ isLoading, setIsLoading, setOriginalImage, setProcessedImage, setError, setView, t }) {
+function HomePage({ isLoading, setIsLoading, setOriginalImage, setProcessedImage, setView, t }) {
   return (
     <>
       <HeroUploader 
@@ -538,7 +538,6 @@ function HomePage({ isLoading, setIsLoading, setOriginalImage, setProcessedImage
         setIsLoading={setIsLoading}
         setOriginalImage={setOriginalImage}
         setProcessedImage={setProcessedImage}
-        setError={setError}
         setView={setView}
         t={t}
       />
@@ -553,7 +552,7 @@ function HomePage({ isLoading, setIsLoading, setOriginalImage, setProcessedImage
 /**
  * HeroUploader - 主上传区域（核心功能）
  */
-function HeroUploader({ isLoading, setIsLoading, setOriginalImage, setProcessedImage, setError, setView, t }) {
+function HeroUploader({ isLoading, setIsLoading, setOriginalImage, setProcessedImage, setView, t }) {
   const fileInputRef = React.useRef(null);
   const [errorMessage, setErrorMessage] = React.useState(null);
 
@@ -610,7 +609,6 @@ function HeroUploader({ isLoading, setIsLoading, setOriginalImage, setProcessedI
     try {
       // 步骤 1: 开始加载
       setIsLoading(true);
-      setError(null);
       setErrorMessage(null);
       console.log('📤 开始上传:', file.name);
 
@@ -655,7 +653,6 @@ function HeroUploader({ isLoading, setIsLoading, setOriginalImage, setProcessedI
       console.error('❌ 错误:', err);
       const friendlyMessage = getErrorMessage(err);
       setErrorMessage(friendlyMessage);
-      setError(err.message || err.detail || 'Failed to process image');
     } finally {
       // 步骤 8: 结束加载
       setIsLoading(false);
@@ -832,14 +829,13 @@ function Features({ t }) {
                 <div className="absolute inset-0 checkerboard-bg" aria-hidden="true"></div>
                 <img 
                   src={test1Image} 
-                  alt="Professional product photo with clean white background removed - perfect for e-commerce stores and online shops" 
+                  alt="Professional product with clean background removed for e-commerce" 
                   loading="lazy"
                   width="800"
                   height="800"
                   className="relative w-full h-full object-contain p-8"
                 />
               </div>
-              <figcaption className="sr-only">E-commerce product example with transparent background</figcaption>
             </figure>
           </article>
 
@@ -855,14 +851,13 @@ function Features({ t }) {
               <div className="w-full aspect-video rounded-lg shadow-lg overflow-hidden bg-white border border-gray-200">
                 <img 
                   src={test2Image} 
-                  alt="Creative design example showing subject isolated from background - ideal for posters and social media" 
+                  alt="Creative design with removed background for posters and social media" 
                   loading="lazy"
                   width="1200"
                   height="675"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <figcaption className="sr-only">Creative example with background removed</figcaption>
             </figure>
           </article>
         </div>
@@ -1088,20 +1083,18 @@ function Footer({ t }) {
       <div className="max-w-6xl mx-auto px-6 text-center text-sm text-text-secondary">
         <p>{t.footer.copyright}</p>
         <div className="mt-4 space-x-6">
-          <a 
-            className="hover:text-primary transition-colors cursor-pointer" 
-            href="#"
+          <button 
+            className="hover:text-primary transition-colors cursor-pointer bg-transparent border-0 p-0 text-sm text-text-secondary" 
             onClick={(e) => e.preventDefault()}
           >
             {t.footer.privacy}
-          </a>
-          <a 
-            className="hover:text-primary transition-colors cursor-pointer" 
-            href="#"
+          </button>
+          <button 
+            className="hover:text-primary transition-colors cursor-pointer bg-transparent border-0 p-0 text-sm text-text-secondary" 
             onClick={(e) => e.preventDefault()}
           >
             {t.footer.terms}
-          </a>
+          </button>
         </div>
       </div>
     </footer>
@@ -1174,7 +1167,6 @@ function App() {
   const [originalImage, setOriginalImage] = useState(null); // 本地 URL
   const [processedImage, setProcessedImage] = useState(null); // 服务器 URL
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   
   // 从 localStorage 加载保存的语言，默认为英文
   const [language, setLanguage] = useState(() => {
@@ -1201,7 +1193,6 @@ function App() {
     // 重置状态
     setOriginalImage(null);
     setProcessedImage(null);
-    setError(null);
     setView('home');
   };
 
@@ -1217,7 +1208,6 @@ function App() {
     // 重置状态
     setOriginalImage(null);
     setProcessedImage(null);
-    setError(null);
     setView('home');
   };
 
@@ -1226,7 +1216,7 @@ function App() {
   // ========================================
   return (
     <>
-      <SEO language={language} translations={translations} />
+      <SEO language={language} />
       <GlobalStyles />
       <div className="min-h-screen bg-background-light font-display flex flex-col">
         {/* Header 组件 */}
@@ -1245,7 +1235,6 @@ function App() {
               setIsLoading={setIsLoading}
               setOriginalImage={setOriginalImage}
               setProcessedImage={setProcessedImage}
-              setError={setError}
               setView={setView}
               t={t}
             />

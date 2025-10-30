@@ -5,9 +5,7 @@ import { Helmet } from 'react-helmet-async';
  * SEO组件 - 管理页面的meta标签和结构化数据
  * 支持多语言动态切换
  */
-const SEO = ({ language, translations }) => {
-  const t = translations[language];
-  
+const SEO = ({ language }) => {
   // 根据语言设置页面信息
   const seoData = {
     en: {
