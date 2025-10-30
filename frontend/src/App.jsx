@@ -7,24 +7,17 @@ import SEO from './SEO';
 // API 配置 - 自动检测运行环境
 // ============================================================================
 const API_BASE_URL = (() => {
-  // 如果设置了环境变量，使用环境变量（优先级最高）
-  if (process.env.REACT_APP_API_URL) {
-    return process.env.REACT_APP_API_URL;
-  }
-  
-  // 如果是本地开发环境（localhost 或 127.0.0.1）
+  // 本地开发环境：直接连接本地后端
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://127.0.0.1:18181';
   }
   
-  // 生产环境：使用当前域名 + 后端端口
-  // 注意：你需要确保云服务器的 18181 端口已开放，或使用反向代理
-  const protocol = window.location.protocol; // http: 或 https:
-  const hostname = window.location.hostname; // 你的域名或 IP
-  return `${protocol}//${hostname}:18181`;
+  // 生产环境：使用相对路径（通过 Vercel 反向代理）
+  // vercel.json 会将 /api/* 请求代理到 AWS 后端
+  return '';  // 空字符串表示使用相对路径
 })();
 
-console.log('🌐 API Base URL:', API_BASE_URL);
+console.log('🌐 API Base URL:', API_BASE_URL || '(相对路径)');
 
 // ============================================================================
 // 多语言翻译数据
