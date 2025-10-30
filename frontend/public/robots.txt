@@ -8,7 +8,7 @@ Allow: /
 Disallow: /static/results/
 
 # Sitemap location
-Sitemap: https://bg.airemover.im/sitemap.xml
+Sitemap: https://www.airemover.im/sitemap.xml
 
 # Crawl rate limit (optional, for considerate crawling)
 Crawl-delay: 1
