@@ -38,7 +38,11 @@ app = FastAPI(
 # CORS 配置 - 允许跨域请求（开发环境）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 生产环境应该设置具体的域名
+    allow_origins=[
+        "https://www.airemover.im",           # 你的生产域名
+        "http://localhost:18180",             # 本地开发
+        "http://127.0.0.1:18180",            # 本地开发
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
