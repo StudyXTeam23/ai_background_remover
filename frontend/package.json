@@ -6,8 +6,8 @@
   "scripts": {
     "start": "PORT=18180 BROWSER=none react-scripts start",
     "start:win": "set PORT=18180 && react-scripts start",
-    "build": "react-scripts build && react-snap",
-    "build:no-snap": "react-scripts build",
+    "build": "react-scripts build",
+    "build:with-snap": "react-scripts build && react-snap",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
