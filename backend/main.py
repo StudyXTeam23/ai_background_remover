@@ -41,6 +41,7 @@ app.add_middleware(
     allow_origins=[
         "https://www.airemover.im",           # 生产域名
         "https://airemover.im",               # 生产域名（无www）
+        "https://ai-background-remover-git-main-study-x-inc.vercel.app",               # 生产域名（无www）
         "http://localhost:18180",             # 本地开发
         "http://127.0.0.1:18180",            # 本地开发
     ],
