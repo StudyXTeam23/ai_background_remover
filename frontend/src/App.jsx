@@ -12,12 +12,12 @@ const API_BASE_URL = (() => {
     return 'http://127.0.0.1:18181';
   }
   
-  // 生产环境：使用相对路径（通过 Vercel 反向代理）
-  // vercel.json 会将 /api/* 请求代理到 AWS 后端
+  // 生产环境：使用 Vercel Serverless Functions（支持 300 秒超时）
+  // /api/remove-background 会自动路由到 api/remove-background.js
   return '';  // 空字符串表示使用相对路径
 })();
 
-console.log('🌐 API Base URL:', API_BASE_URL || '(相对路径)');
+console.log('🌐 API Base URL:', API_BASE_URL || '(Serverless Functions)');
 
 // ============================================================================
 // 多语言翻译数据
