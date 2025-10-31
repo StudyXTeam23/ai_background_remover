@@ -162,8 +162,6 @@ async def remove_background(image_file: UploadFile = File(...)):
     # ========================================
     # 5. 调用 302.AI Removebg-V3 API
     # ========================================
-    image_content = None
-    
     print("\n🟢 调用 302.AI Removebg-V3 API...")
     print("⏱️  预计耗时: 3-5秒")
     
@@ -209,18 +207,18 @@ async def remove_background(image_file: UploadFile = File(...)):
                     image_url_response = result['image']['url']
                     file_size = result['image'].get('file_size', 'unknown')
                     
-                    print(f"🔗 下载处理后的图片: {image_url_response}")
+                    print(f"🔗 处理后的图片URL: {image_url_response}")
                     print(f"📊 文件大小: {file_size} bytes")
+                    print(f"✅ 处理成功! 直接返回302.AI的URL")
+                    print("=" * 60 + "\n")
                     
-                    # 下载处理后的图片
-                    img_response = requests.get(image_url_response, timeout=30)
-                    
-                    if img_response.ok:
-                        image_content = img_response.content
-                        print(f"✅ 图片下载成功 ({len(image_content)} bytes)")
-                    else:
-                        print(f"❌ 图片下载失败: HTTP {img_response.status_code}")
-                        raise HTTPException(status_code=500, detail='Failed to download processed image')
+                    # 直接返回302.AI的图片URL，不下载保存（避免超时）
+                    return {
+                        'processed_url': image_url_response,
+                        'api': '302.ai-removebg-v3',
+                        'cost': '0.01 PTC',
+                        'direct_url': True
+                    }
                 
                 elif 'error' in result:
                     # 处理错误响应
@@ -269,39 +267,6 @@ async def remove_background(image_file: UploadFile = File(...)):
         print(f"❌ API 调用异常: {e}")
         print(f"   异常类型: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=f'API error: {str(e)}')
-    
-    # ========================================
-    # 6. 保存处理后的图片
-    # ========================================
-    if image_content:
-        try:
-            # 生成唯一文件名
-            filename = str(uuid.uuid4()) + '.png'
-            filepath = os.path.join(RESULTS_DIR, filename)
-            
-            # 保存文件
-            with open(filepath, 'wb') as f:
-                f.write(image_content)
-            
-            print(f"💾 文件已保存: {filepath}")
-            
-            # 返回 URL
-            processed_url = f'/static/results/{filename}'
-            print(f"✅ 处理成功! URL: {processed_url}")
-            print("=" * 60 + "\n")
-            
-            return {
-                'processed_url': processed_url,
-                'api': '302.ai-removebg-v3',
-                'cost': '0.01 PTC'
-            }
-        
-        except Exception as e:
-            print(f"❌ 保存文件失败: {e}")
-            raise HTTPException(status_code=500, detail=f'Failed to save file: {str(e)}')
-    else:
-        print("❌ 没有获取到处理后的图片数据")
-        raise HTTPException(status_code=500, detail='No image content received from API')
 
 
 # ============================================================================

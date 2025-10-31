@@ -634,7 +634,10 @@ function HeroUploader({ isLoading, setIsLoading, setOriginalImage, setProcessedI
       console.log('✓ 响应数据:', data);
 
       // 步骤 6: 设置处理后的图片 URL
-      const processedUrl = `${API_BASE_URL}${data.processed_url}`;
+      // 如果返回的是完整URL（以http开头），直接使用；否则拼接API_BASE_URL
+      const processedUrl = data.processed_url.startsWith('http') 
+        ? data.processed_url 
+        : `${API_BASE_URL}${data.processed_url}`;
       setProcessedImage(processedUrl);
       console.log('✓ 处理后的图片 URL:', processedUrl);
 
@@ -973,6 +976,41 @@ function FAQ({ t }) {
  * 显示原始图片和处理后的图片对比，提供下载功能
  */
 function ResultPage({ originalImage, processedImage, onUploadNew, t }) {
+  // 处理下载 - 支持跨域图片下载
+  const handleDownload = async () => {
+    try {
+      console.log('📥 开始下载图片:', processedImage);
+      
+      // 如果是外部URL（302.AI），使用fetch下载
+      if (processedImage.startsWith('http')) {
+        const response = await fetch(processedImage);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'ai-bg-remover-result.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        console.log('✅ 下载完成');
+      } else {
+        // 如果是本地URL，直接下载
+        const a = document.createElement('a');
+        a.href = processedImage;
+        a.download = 'ai-bg-remover-result.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        console.log('✅ 下载完成');
+      }
+    } catch (error) {
+      console.error('❌ 下载失败:', error);
+      // 降级方案：在新标签页打开
+      window.open(processedImage, '_blank');
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-160px)] py-12 px-6">
       <div className="w-full max-w-4xl mx-auto">
@@ -1028,15 +1066,12 @@ function ResultPage({ originalImage, processedImage, onUploadNew, t }) {
           <div className="text-center space-y-4">
             {/* 下载按钮 */}
             <div>
-              <a
-                href={processedImage}
-                download="ai-bg-remover-result.png"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={handleDownload}
                 className="inline-block bg-primary text-white font-semibold py-3 px-10 rounded-xl hover:bg-opacity-90 transition-opacity shadow-lg"
               >
                 {t.result.download}
-              </a>
+              </button>
             </div>
 
             {/* 上传新图片链接 */}
