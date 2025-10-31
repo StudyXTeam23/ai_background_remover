@@ -1,13 +1,13 @@
 """
 AI Background Remover Backend
 单文件 FastAPI 应用，实现图片背景去除功能
-使用 302.AI 的 Removebg-V3 背景消除服务
-API文档: https://302.ai/product/detail/302ai-removebg-v3
+使用 302.AI 的 Removebg-V2 背景消除服务
+API文档: https://302.ai/product/detail/302ai-removebg-v2
 
 特性:
 - Base64 编码传输图片
 - 成本低：每次仅需0.01 PTC
-- 速度快：平均3-5秒完成处理
+- 速度快：平均10-20秒完成处理（V2版本）
 """
 
 import os
@@ -31,7 +31,7 @@ load_dotenv()
 # ============================================================================
 app = FastAPI(
     title="AI Background Remover API",
-    description="使用 302.AI 的 Removebg-V3 服务去除图片背景",
+    description="使用 302.AI 的 Removebg-V2 服务去除图片背景",
     version="1.0.0"
 )
 
@@ -87,21 +87,21 @@ async def health_check():
 async def remove_background(image_file: UploadFile = File(...)):
     """
     图片背景去除 API 端点
-    使用 302.AI 的 Removebg-V3 背景消除服务
+    使用 302.AI 的 Removebg-V2 背景消除服务
     
     接收:
         - multipart/form-data 格式
         - 字段名: image_file
     
     返回:
-        - 成功: {"processed_url": "/static/results/{uuid}.png", "api": "302.ai-removebg-v3"}
+        - 成功: {"processed_url": "https://file.302.ai/...", "api": "302.ai-removebg-v2"}
         - 失败: {"error": "错误消息"}
     
     特性:
-        - 价格: 0.01 PTC/次（便宜75%！）
-        - 平均耗时: 3-5秒（快3-4倍！）
-        - 使用302.AI自己部署的优化模型
+        - 价格: 0.01 PTC/次
+        - 平均耗时: 10-20秒（V2版本）
         - 使用 Base64 编码直接传输图片
+        - 直接返回302.AI的图片URL
     """
     print("\n" + "=" * 60)
     print("📸 接收到背景去除请求")
@@ -160,14 +160,14 @@ async def remove_background(image_file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f'Failed to encode image: {str(e)}')
     
     # ========================================
-    # 5. 调用 302.AI Removebg-V3 API
+    # 5. 调用 302.AI Removebg-V2 API
     # ========================================
-    print("\n🟢 调用 302.AI Removebg-V3 API...")
-    print("⏱️  预计耗时: 3-5秒")
+    print("\n🟢 调用 302.AI Removebg-V2 API...")
+    print("⏱️  预计耗时: 10-20秒")
     
     try:
         # API 端点和配置
-        api_url = 'https://api.302.ai/302/submit/removebg-v3'
+        api_url = 'https://api.302.ai/302/submit/removebg-v2'
         headers = {
             'Authorization': f'Bearer {AI302_API_KEY}',
             'Content-Type': 'application/json'
@@ -182,7 +182,7 @@ async def remove_background(image_file: UploadFile = File(...)):
         print(f"📤 发送 Base64 编码图片 (data URI, ~{len(image_url)} chars, ~{len(image_url)/1024:.1f}KB)")
         print(f"📡 发送请求到: {api_url}")
         print(f"🔐 认证: Bearer {AI302_API_KEY[:10]}...")
-        print(f"⏰ 超时设置: 120秒（处理可能需要较长时间）")
+        print(f"⏰ 超时设置: 90秒（V2版本更快）")
         
         start_time = time.time()
         
@@ -190,7 +190,7 @@ async def remove_background(image_file: UploadFile = File(...)):
             api_url,
             headers=headers,
             json=payload,
-            timeout=(10, 120)  # (连接超时10秒, 读取超时120秒)
+            timeout=(10, 90)  # (连接超时10秒, 读取超时90秒)
         )
         
         elapsed_time = time.time() - start_time
@@ -202,20 +202,33 @@ async def remove_background(image_file: UploadFile = File(...)):
                 result = response.json()
                 print(f"📦 API 响应数据: {result}")
                 
-                # 检查响应格式 - 实际返回格式是 {"image": {"url": "...", "content_type": "...", "file_size": ...}}
-                if 'image' in result and 'url' in result['image']:
+                # 检查响应格式 - V2 API 可能返回不同格式
+                # 格式1: {"output": "https://..."}
+                # 格式2: {"image": {"url": "https://..."}}
+                image_url_response = None
+                file_size = 'unknown'
+                
+                if 'output' in result and result['output']:
+                    # V2 格式：直接在 output 字段
+                    image_url_response = result['output']
+                    print(f"✓ 找到图片URL (output 字段)")
+                elif 'image' in result and 'url' in result['image']:
+                    # V3 格式：在 image.url 字段
                     image_url_response = result['image']['url']
                     file_size = result['image'].get('file_size', 'unknown')
-                    
+                    print(f"✓ 找到图片URL (image.url 字段)")
+                
+                if image_url_response:
                     print(f"🔗 处理后的图片URL: {image_url_response}")
-                    print(f"📊 文件大小: {file_size} bytes")
+                    if file_size != 'unknown':
+                        print(f"📊 文件大小: {file_size} bytes")
                     print(f"✅ 处理成功! 直接返回302.AI的URL")
                     print("=" * 60 + "\n")
                     
                     # 直接返回302.AI的图片URL，不下载保存（避免超时）
                     return {
                         'processed_url': image_url_response,
-                        'api': '302.ai-removebg-v3',
+                        'api': '302.ai-removebg-v2',
                         'cost': '0.01 PTC',
                         'direct_url': True
                     }
@@ -253,14 +266,14 @@ async def remove_background(image_file: UploadFile = File(...)):
         )
     
     except requests.exceptions.Timeout:
-        print("❌ API 请求超时 (120秒)")
+        print("❌ API 请求超时 (90秒)")
         print(f"💡 提示: 图片大小为 {len(image_data)} bytes ({len(image_data)/1024:.1f}KB)")
         print(f"💡 Base64 传输大小: {len(image_url)} chars (~{len(image_url)/1024:.1f}KB)")
         print(f"⚠️  302.AI 服务可能繁忙或图片处理复杂")
         print(f"💡 建议: 1) 稍后重试 2) 尝试更小的图片 3) 检查 302.AI 服务状态")
         raise HTTPException(
             status_code=504,
-            detail='Request timed out after 120 seconds. The 302.AI service might be busy or the image is too complex.'
+            detail='Request timed out after 90 seconds. The 302.AI service might be busy or the image is too complex.'
         )
     
     except Exception as e:
@@ -278,9 +291,9 @@ if __name__ == '__main__':
     print("=" * 60)
     print(f"📁 Results Directory: {os.path.abspath(RESULTS_DIR)}")
     print(f"🔑 302.AI API Key: {'✓ Loaded' if AI302_API_KEY and AI302_API_KEY != 'YOUR_302_AI_API_KEY_HERE' else '✗ Missing'}")
-    print(f"🌐 API Service: 302.AI Removebg-V3 (Background Removal)")
-    print(f"💰 Cost: 0.01 PTC per request (75% cheaper!)")
-    print(f"⚡ Processing Time: ~3-5 seconds (3-4x faster!)")
+    print(f"🌐 API Service: 302.AI Removebg-V2 (Background Removal)")
+    print(f"💰 Cost: 0.01 PTC per request")
+    print(f"⚡ Processing Time: ~10-20 seconds (V2 version)")
     print(f"📦 Image Transfer: Base64 encoding (Direct transmission)")
     print("=" * 60)
     print("🌐 Server running at: http://127.0.0.1:18181")
