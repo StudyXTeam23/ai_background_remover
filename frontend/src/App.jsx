@@ -1,23 +1,8 @@
 import React, { useState } from 'react';
-import test1Image from './test1.png';
-import test2Image from './test2.png';
+import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import SEO from './SEO';
-
-// ============================================================================
-// API 配置 - 自动检测运行环境
-// ============================================================================
-const API_BASE_URL = (() => {
-  // 本地开发环境：直接连接本地后端
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://127.0.0.1:18181';
-  }
-  
-  // 生产环境：使用 Vercel Serverless Functions（支持 300 秒超时）
-  // /api/remove-background 会自动路由到 api/remove-background.js
-  return '';  // 空字符串表示使用相对路径
-})();
-
-console.log('🌐 API Base URL:', API_BASE_URL || '(Serverless Functions)');
+import BackgroundRemover from './pages/BackgroundRemover';
+import WatermarkRemover from './pages/WatermarkRemover';
 
 // ============================================================================
 // 多语言翻译数据
@@ -26,8 +11,10 @@ const translations = {
   'en': {
     name: 'English',
     flag: '🇺🇸',
-    header: {
-      title: 'AI Background Remover',
+    header: { title: 'AI Background Remover' },
+    navigation: {
+      backgroundRemover: 'Background',
+      watermarkRemover: 'Watermark',
     },
     home: {
       heroTitle: 'Remove Instantly. AI Powered.',
@@ -36,6 +23,7 @@ const translations = {
       uploadHint: 'Supported: JPG, PNG, WEBP (Max 16MB)',
       processing: 'Processing image...',
       processingHint: 'This may take a few seconds',
+      dropToUpload: '📥 Release to upload',
     },
     errors: {
       invalidFileType: 'Please select a valid image file (JPG, PNG, or WEBP)',
@@ -56,11 +44,11 @@ const translations = {
     },
     features: {
       title: 'What can AI Background Remover do for you?',
-      subtitle: 'AI Background Remover helps you create stunning visuals for any purpose, whether it\'s for your online store, social media, or personal projects. See the difference for yourself.',
+      subtitle: 'AI Background Remover helps you create stunning visuals for any purpose, whether it\'s for your online store, social media, or personal projects.',
       ecommerceTitle: 'For E-commerce',
-      ecommerceDesc: 'Create professional product photos with clean, white backgrounds that sell. Increase your conversion rates by presenting your products in the best possible light.',
+      ecommerceDesc: 'Create professional product photos with clean, white backgrounds that sell.',
       creativesTitle: 'For Creatives',
-      creativesDesc: 'Isolate subjects from their background to create compelling compositions and designs. Perfect for posters, social media posts, and personal art projects.',
+      creativesDesc: 'Isolate subjects from their background to create compelling compositions and designs.',
     },
     whyChoose: {
       title: 'Why choose AI Background Remover?',
@@ -74,13 +62,13 @@ const translations = {
     faq: {
       title: 'Frequently Asked Questions',
       q1: 'What file formats do you support?',
-      a1: 'We support all common image formats, including JPG, PNG, and WEBP. For the best results, we recommend uploading high-resolution images.',
+      a1: 'We support all common image formats, including JPG, PNG, and WEBP.',
       q2: 'Is there a resolution limit?',
-      a2: 'You can upload images up to 12 megapixels. The downloaded image will have the same resolution as the original.',
+      a2: 'You can upload images up to 12 megapixels.',
       q3: 'How do you handle my privacy?',
-      a3: 'We take your privacy very seriously. All uploaded images are automatically deleted from our servers within one hour of processing.',
+      a3: 'All uploaded images are automatically deleted from our servers within one hour.',
       q4: 'Is AI Background Remover really free?',
-      a4: 'Yes, AI Background Remover is completely free for personal and commercial use. There are no hidden costs or usage limits.',
+      a4: 'Yes, completely free for personal and commercial use.',
     },
     result: {
       title: 'Processing Complete!',
@@ -89,7 +77,20 @@ const translations = {
       removed: 'Removed',
       download: 'Download Image',
       uploadNew: 'Or upload a new image',
-      tip: 'The downloaded image will have a transparent background in PNG format, perfect for use in design projects, presentations, or online stores.',
+      tip: 'The downloaded image will have a transparent background in PNG format.',
+    },
+    watermark: {
+      title: 'AI Watermark Remover',
+      subtitle: 'Use our advanced AI technology to easily remove watermarks, logos, and stains.',
+      uploadPrompt: 'Select file or drag here',
+      uploadHint: 'Supported: JPG, JPEG, PNG, WebP (Max 10 MB)',
+      processing: 'Processing image...',
+      processingHint: 'This may take a few seconds',
+      beforeLabel: 'Original',
+      afterLabel: 'Result',
+      download: 'Download Image',
+      uploadNew: 'Upload New',
+      downloadError: 'Download failed, please try again',
     },
     footer: {
       copyright: '© 2025 AI Background Remover. All Rights Reserved.',
@@ -100,8 +101,10 @@ const translations = {
   'zh': {
     name: '中文',
     flag: '🇨🇳',
-    header: {
-      title: 'AI 背景移除',
+    header: { title: 'AI 背景移除' },
+    navigation: {
+      backgroundRemover: '去背景',
+      watermarkRemover: '去水印',
     },
     home: {
       heroTitle: '即刻移除，AI 驱动',
@@ -110,6 +113,7 @@ const translations = {
       uploadHint: '支持格式：JPG、PNG、WEBP（最大 16MB）',
       processing: '正在处理图片...',
       processingHint: '这可能需要几秒钟',
+      dropToUpload: '📥 释放以上传',
     },
     errors: {
       invalidFileType: '请选择有效的图片文件（JPG、PNG 或 WEBP）',
@@ -130,16 +134,16 @@ const translations = {
     },
     features: {
       title: 'AI 背景移除能为你做什么？',
-      subtitle: 'AI 背景移除帮助你为任何目的创建令人惊叹的视觉效果，无论是在线商店、社交媒体还是个人项目。亲自体验差异。',
+      subtitle: 'AI 背景移除帮助你为任何目的创建令人惊叹的视觉效果。',
       ecommerceTitle: '电商应用',
-      ecommerceDesc: '创建具有干净白色背景的专业产品照片。通过以最佳方式展示产品来提高转化率。',
+      ecommerceDesc: '创建具有干净白色背景的专业产品照片。',
       creativesTitle: '创意设计',
-      creativesDesc: '将主体从背景中分离，创建引人注目的构图和设计。完美适用于海报、社交媒体帖子和个人艺术项目。',
+      creativesDesc: '将主体从背景中分离，创建引人注目的构图和设计。',
     },
     whyChoose: {
       title: '为什么选择 AI 背景移除？',
       quality: '高质量结果',
-      qualityDesc: '我们的 AI 经过训练，可以处理像头发和毛发这样的复杂边缘，每次都能提供清晰的剪裁。',
+      qualityDesc: '我们的 AI 经过训练，可以处理像头发和毛发这样的复杂边缘。',
       free: '完全免费',
       freeDesc: '免费去除任何图片的背景。无需订阅，没有隐藏费用。',
       privacy: '注重隐私',
@@ -148,13 +152,13 @@ const translations = {
     faq: {
       title: '常见问题',
       q1: '支持哪些文件格式？',
-      a1: '我们支持所有常见的图片格式，包括 JPG、PNG 和 WEBP。为获得最佳效果，我们建议上传高分辨率图片。',
+      a1: '我们支持所有常见的图片格式，包括 JPG、PNG 和 WEBP。',
       q2: '有分辨率限制吗？',
-      a2: '您可以上传最大 12 百万像素的图片。下载的图片将保持与原始图片相同的分辨率。',
+      a2: '您可以上传最大 12 百万像素的图片。',
       q3: '如何处理我的隐私？',
-      a3: '我们非常重视您的隐私。所有上传的图片将在处理后一小时内自动从我们的服务器中删除。',
+      a3: '所有上传的图片将在处理后一小时内自动删除。',
       q4: 'AI 背景移除真的免费吗？',
-      a4: '是的，AI 背景移除完全免费供个人和商业使用。没有隐藏费用或使用限制。',
+      a4: '是的，完全免费供个人和商业使用。',
     },
     result: {
       title: '处理完成！',
@@ -163,7 +167,20 @@ const translations = {
       removed: '去除背景',
       download: '下载图片',
       uploadNew: '或上传新图片',
-      tip: '下载的图片将采用 PNG 格式的透明背景，非常适合用于设计项目、演示文稿或在线商店。',
+      tip: '下载的图片将采用 PNG 格式的透明背景。',
+    },
+    watermark: {
+      title: 'AI 水印去除器',
+      subtitle: '利用我们先进的AI技术，轻松移除水印、徽标和污渍。',
+      uploadPrompt: '选择文件或拖拽到此处',
+      uploadHint: '支持格式：JPG、JPEG、PNG、WebP（最大 10 MB）',
+      processing: '正在处理图片...',
+      processingHint: '这可能需要几秒钟',
+      beforeLabel: '原图',
+      afterLabel: '处理后',
+      download: '下载图片',
+      uploadNew: '重新上传',
+      downloadError: '下载失败，请重试',
     },
     footer: {
       copyright: '© 2025 AI 背景移除。保留所有权利。',
@@ -171,256 +188,376 @@ const translations = {
       terms: '服务条款',
     },
   },
-  'es': {
-    name: 'Español',
-    flag: '🇪🇸',
-    header: {
-      title: 'Eliminar Fondo IA',
-    },
-    home: {
-      heroTitle: 'Elimina Instantáneamente. Con IA.',
-      heroSubtitle: 'Automático, Gratis, Alta Calidad. Arrastra y suelta imágenes para fondos claros.',
-      uploadPrompt: 'Selecciona archivo o arrastra aquí',
-      uploadHint: 'Soportados: JPG, PNG, WEBP (Máx 16MB)',
-      processing: 'Procesando imagen...',
-      processingHint: 'Esto puede tardar unos segundos',
-    },
-    errors: {
-      invalidFileType: 'Seleccione un archivo de imagen válido (JPG, PNG o WEBP)',
-      fileTooLarge: 'Archivo demasiado grande. Tamaño máximo 16MB',
-      processingFailed: 'Error al procesar la imagen. Intente de nuevo',
-      networkError: 'Error de red. Verifique su conexión',
-      serverError: 'Error del servidor. Intente más tarde',
-      apiKeyMissing: 'La clave API no está configurada. Contacte al administrador',
-    },
-    howItWorks: {
-      title: 'Cómo eliminar el fondo de la imagen',
-      step1Title: 'Subir Imagen',
-      step1Desc: 'Selecciona una foto de tu dispositivo o simplemente arrástrala al área de carga.',
-      step2Title: 'Procesamiento IA',
-      step2Desc: 'Nuestra potente IA detectará automáticamente el sujeto y eliminará el fondo.',
-      step3Title: 'Descargar Resultado',
-      step3Desc: 'Obtén una imagen de alta calidad con fondo transparente, lista para usar en cualquier lugar.',
-    },
-    features: {
-      title: '¿Qué puede hacer el Eliminador de Fondos IA por ti?',
-      subtitle: 'Eliminar Fondo IA te ayuda a crear visuales impresionantes para cualquier propósito, ya sea para tu tienda online, redes sociales o proyectos personales.',
-      ecommerceTitle: 'Para E-commerce',
-      ecommerceDesc: 'Crea fotos de productos profesionales con fondos blancos limpios que venden. Aumenta tus tasas de conversión presentando tus productos de la mejor manera.',
-      creativesTitle: 'Para Creativos',
-      creativesDesc: 'Aísla sujetos de su fondo para crear composiciones y diseños convincentes. Perfecto para pósters, publicaciones en redes sociales y proyectos artísticos personales.',
-    },
-    whyChoose: {
-      title: '¿Por qué elegir Eliminar Fondo IA?',
-      quality: 'Resultados de Alta Calidad',
-      qualityDesc: 'Nuestra IA está entrenada para manejar bordes complejos como cabello y pelaje, ofreciendo recortes nítidos en todo momento.',
-      free: 'Completamente Gratis',
-      freeDesc: 'Elimina fondos de cualquier imagen sin costo. Sin suscripciones, sin tarifas ocultas.',
-      privacy: 'Enfocado en la Privacidad',
-      privacyDesc: 'Tus imágenes se procesan de forma segura y se eliminan automáticamente de nuestros servidores.',
-    },
-    faq: {
-      title: 'Preguntas Frecuentes',
-      q1: '¿Qué formatos de archivo soportan?',
-      a1: 'Soportamos todos los formatos de imagen comunes, incluyendo JPG, PNG y WEBP. Para mejores resultados, recomendamos subir imágenes de alta resolución.',
-      q2: '¿Hay un límite de resolución?',
-      a2: 'Puedes subir imágenes de hasta 12 megapíxeles. La imagen descargada tendrá la misma resolución que la original.',
-      q3: '¿Cómo manejan mi privacidad?',
-      a3: 'Tomamos tu privacidad muy en serio. Todas las imágenes subidas se eliminan automáticamente de nuestros servidores dentro de una hora después del procesamiento.',
-      q4: '¿Eliminar Fondo IA es realmente gratis?',
-      a4: 'Sí, Eliminar Fondo IA es completamente gratis para uso personal y comercial. No hay costos ocultos ni límites de uso.',
-    },
-    result: {
-      title: '¡Procesamiento Completo!',
-      subtitle: 'Tu imagen está lista para descargar',
-      original: 'Original',
-      removed: 'Sin Fondo',
-      download: 'Descargar Imagen',
-      uploadNew: 'O subir una nueva imagen',
-      tip: 'La imagen descargada tendrá un fondo transparente en formato PNG, perfecta para proyectos de diseño, presentaciones o tiendas online.',
-    },
-    footer: {
-      copyright: '© 2025 Eliminar Fondo IA. Todos los derechos reservados.',
-      privacy: 'Política de Privacidad',
-      terms: 'Términos de Servicio',
-    },
-  },
   'fr': {
     name: 'Français',
     flag: '🇫🇷',
-    header: {
-      title: 'Supprimer Fond IA',
+    header: { title: 'Suppresseur d\'Arrière-Plan IA' },
+    navigation: {
+      backgroundRemover: 'Arrière-plan',
+      watermarkRemover: 'Filigrane',
     },
     home: {
-      heroTitle: 'Supprimez Instantanément. Propulsé par l\'IA.',
+      heroTitle: 'Suppression Instantanée. Propulsé par l\'IA.',
       heroSubtitle: 'Automatique, Gratuit, Haute Qualité. Glissez-déposez des images pour des arrière-plans clairs.',
       uploadPrompt: 'Sélectionner un fichier ou glisser ici',
-      uploadHint: 'Pris en charge: JPG, PNG, WEBP (Max 16 Mo)',
+      uploadHint: 'Formats supportés: JPG, PNG, WEBP (Max 16MB)',
       processing: 'Traitement de l\'image...',
       processingHint: 'Cela peut prendre quelques secondes',
+      dropToUpload: '📥 Relâcher pour télécharger',
     },
     errors: {
       invalidFileType: 'Veuillez sélectionner un fichier image valide (JPG, PNG ou WEBP)',
-      fileTooLarge: 'Fichier trop volumineux. Taille maximale 16 Mo',
-      processingFailed: 'Échec du traitement de l\'image. Réessayez',
-      networkError: 'Erreur réseau. Vérifiez votre connexion',
-      serverError: 'Erreur serveur. Réessayez plus tard',
-      apiKeyMissing: 'La clé API n\'est pas configurée. Contactez l\'administrateur',
+      fileTooLarge: 'Le fichier est trop volumineux. Taille maximale: 16MB',
+      processingFailed: 'Échec du traitement de l\'image. Veuillez réessayer',
+      networkError: 'Erreur réseau. Veuillez vérifier votre connexion',
+      serverError: 'Erreur serveur. Veuillez réessayer plus tard',
+      apiKeyMissing: 'La clé API n\'est pas configurée. Veuillez contacter l\'administrateur',
     },
     howItWorks: {
-      title: 'Comment supprimer l\'arrière-plan de l\'image',
+      title: 'Comment supprimer l\'arrière-plan d\'une image',
       step1Title: 'Télécharger l\'Image',
       step1Desc: 'Sélectionnez une photo depuis votre appareil ou glissez-la simplement dans la zone de téléchargement.',
       step2Title: 'Traitement IA',
       step2Desc: 'Notre IA puissante détectera automatiquement le sujet et supprimera l\'arrière-plan.',
       step3Title: 'Télécharger le Résultat',
-      step3Desc: 'Obtenez une image de haute qualité avec un arrière-plan transparent, prête à être utilisée n\'importe où.',
+      step3Desc: 'Obtenez une image de haute qualité avec un arrière-plan transparent, prête à être utilisée partout.',
     },
     features: {
-      title: 'Que peut faire le Suppresseur d\'Arrière-plan IA pour vous?',
-      subtitle: 'Supprimer Fond IA vous aide à créer des visuels époustouflants pour n\'importe quel usage, que ce soit pour votre boutique en ligne, les réseaux sociaux ou des projets personnels.',
+      title: 'Que peut faire le Suppresseur d\'Arrière-Plan IA pour vous?',
+      subtitle: 'Le Suppresseur d\'Arrière-Plan IA vous aide à créer des visuels époustouflants pour n\'importe quel usage.',
       ecommerceTitle: 'Pour l\'E-commerce',
-      ecommerceDesc: 'Créez des photos de produits professionnelles avec des arrière-plans blancs propres qui vendent. Augmentez vos taux de conversion en présentant vos produits sous leur meilleur jour.',
+      ecommerceDesc: 'Créez des photos de produits professionnelles avec des arrière-plans blancs et propres.',
       creativesTitle: 'Pour les Créatifs',
-      creativesDesc: 'Isolez les sujets de leur arrière-plan pour créer des compositions et des designs convaincants. Parfait pour les affiches, les publications sur les réseaux sociaux et les projets artistiques personnels.',
+      creativesDesc: 'Isolez les sujets de leur arrière-plan pour créer des compositions et designs captivants.',
     },
     whyChoose: {
-      title: 'Pourquoi choisir Supprimer Fond IA?',
+      title: 'Pourquoi choisir le Suppresseur d\'Arrière-Plan IA?',
       quality: 'Résultats de Haute Qualité',
-      qualityDesc: 'Notre IA est formée pour gérer des bords complexes comme les cheveux et la fourrure, offrant des découpes nettes à chaque fois.',
-      free: 'Entièrement Gratuit',
-      freeDesc: 'Supprimez les arrière-plans de n\'importe quelle image sans frais. Pas d\'abonnements, pas de frais cachés.',
+      qualityDesc: 'Notre IA est entraînée pour gérer les bords complexes comme les cheveux et la fourrure.',
+      free: 'Complètement Gratuit',
+      freeDesc: 'Supprimez les arrière-plans de n\'importe quelle image sans frais. Pas d\'abonnement, pas de frais cachés.',
       privacy: 'Axé sur la Confidentialité',
       privacyDesc: 'Vos images sont traitées en toute sécurité et supprimées automatiquement de nos serveurs.',
     },
     faq: {
       title: 'Questions Fréquemment Posées',
-      q1: 'Quels formats de fichiers prenez-vous en charge?',
-      a1: 'Nous prenons en charge tous les formats d\'image courants, y compris JPG, PNG et WEBP. Pour de meilleurs résultats, nous recommandons de télécharger des images haute résolution.',
+      q1: 'Quels formats de fichiers supportez-vous?',
+      a1: 'Nous supportons tous les formats d\'image courants, y compris JPG, PNG et WEBP.',
       q2: 'Y a-t-il une limite de résolution?',
-      a2: 'Vous pouvez télécharger des images jusqu\'à 12 mégapixels. L\'image téléchargée aura la même résolution que l\'original.',
+      a2: 'Vous pouvez télécharger des images jusqu\'à 12 mégapixels.',
       q3: 'Comment gérez-vous ma confidentialité?',
-      a3: 'Nous prenons votre confidentialité très au sérieux. Toutes les images téléchargées sont automatiquement supprimées de nos serveurs dans l\'heure suivant le traitement.',
-      q4: 'Supprimer Fond IA est-il vraiment gratuit?',
-      a4: 'Oui, Supprimer Fond IA est entièrement gratuit pour un usage personnel et commercial. Il n\'y a pas de coûts cachés ni de limites d\'utilisation.',
+      a3: 'Toutes les images téléchargées sont automatiquement supprimées de nos serveurs dans l\'heure.',
+      q4: 'Le Suppresseur d\'Arrière-Plan IA est-il vraiment gratuit?',
+      a4: 'Oui, complètement gratuit pour un usage personnel et commercial.',
     },
     result: {
       title: 'Traitement Terminé!',
-      subtitle: 'Votre image est prête à télécharger',
+      subtitle: 'Votre image est prête à être téléchargée',
       original: 'Original',
-      removed: 'Sans Fond',
+      removed: 'Supprimé',
       download: 'Télécharger l\'Image',
       uploadNew: 'Ou télécharger une nouvelle image',
-      tip: 'L\'image téléchargée aura un arrière-plan transparent au format PNG, parfaite pour les projets de design, les présentations ou les boutiques en ligne.',
+      tip: 'L\'image téléchargée aura un arrière-plan transparent au format PNG.',
+    },
+    watermark: {
+      title: 'Suppresseur de Filigrane IA',
+      subtitle: 'Utilisez notre technologie IA avancée pour supprimer facilement les filigranes, logos et taches.',
+      uploadPrompt: 'Sélectionner un fichier ou glisser ici',
+      uploadHint: 'Formats supportés: JPG, JPEG, PNG, WebP (Max 10 MB)',
+      processing: 'Traitement de l\'image...',
+      processingHint: 'Cela peut prendre quelques secondes',
+      beforeLabel: 'Original',
+      afterLabel: 'Résultat',
+      download: 'Télécharger l\'Image',
+      uploadNew: 'Télécharger Nouveau',
+      downloadError: 'Échec du téléchargement, veuillez réessayer',
     },
     footer: {
-      copyright: '© 2025 Supprimer Fond IA. Tous droits réservés.',
+      copyright: '© 2025 Suppresseur d\'Arrière-Plan IA. Tous droits réservés.',
       privacy: 'Politique de Confidentialité',
-      terms: 'Conditions de Service',
+      terms: 'Conditions d\'Utilisation',
+    },
+  },
+  'es': {
+    name: 'Español',
+    flag: '🇪🇸',
+    header: { title: 'Removedor de Fondo IA' },
+    navigation: {
+      backgroundRemover: 'Fondo',
+      watermarkRemover: 'Marca de Agua',
+    },
+    home: {
+      heroTitle: 'Elimina Instantáneamente. Potenciado por IA.',
+      heroSubtitle: 'Automático, Gratis, Alta Calidad. Arrastra y suelta imágenes para fondos limpios.',
+      uploadPrompt: 'Seleccionar archivo o arrastrar aquí',
+      uploadHint: 'Formatos soportados: JPG, PNG, WEBP (Máx 16MB)',
+      processing: 'Procesando imagen...',
+      processingHint: 'Esto puede tomar unos segundos',
+      dropToUpload: '📥 Soltar para subir',
+    },
+    errors: {
+      invalidFileType: 'Por favor seleccione un archivo de imagen válido (JPG, PNG o WEBP)',
+      fileTooLarge: 'El archivo es demasiado grande. Tamaño máximo: 16MB',
+      processingFailed: 'Error al procesar la imagen. Por favor intente de nuevo',
+      networkError: 'Error de red. Por favor verifique su conexión',
+      serverError: 'Error del servidor. Por favor intente más tarde',
+      apiKeyMissing: 'La clave API no está configurada. Por favor contacte al administrador',
+    },
+    howItWorks: {
+      title: 'Cómo eliminar el fondo de una imagen',
+      step1Title: 'Subir Imagen',
+      step1Desc: 'Seleccione una foto de su dispositivo o simplemente arrástrela al área de carga.',
+      step2Title: 'Procesamiento IA',
+      step2Desc: 'Nuestra poderosa IA detectará automáticamente el sujeto y eliminará el fondo.',
+      step3Title: 'Descargar Resultado',
+      step3Desc: 'Obtenga una imagen de alta calidad con fondo transparente, lista para usar en cualquier lugar.',
+    },
+    features: {
+      title: '¿Qué puede hacer el Removedor de Fondo IA por ti?',
+      subtitle: 'El Removedor de Fondo IA te ayuda a crear imágenes impresionantes para cualquier propósito.',
+      ecommerceTitle: 'Para E-commerce',
+      ecommerceDesc: 'Crea fotos de productos profesionales con fondos blancos y limpios que venden.',
+      creativesTitle: 'Para Creativos',
+      creativesDesc: 'Aísla sujetos de su fondo para crear composiciones y diseños atractivos.',
+    },
+    whyChoose: {
+      title: '¿Por qué elegir el Removedor de Fondo IA?',
+      quality: 'Resultados de Alta Calidad',
+      qualityDesc: 'Nuestra IA está entrenada para manejar bordes complejos como cabello y pelaje.',
+      free: 'Completamente Gratis',
+      freeDesc: 'Elimina fondos de cualquier imagen sin costo. Sin suscripciones, sin tarifas ocultas.',
+      privacy: 'Enfocado en Privacidad',
+      privacyDesc: 'Tus imágenes se procesan de forma segura y se eliminan automáticamente de nuestros servidores.',
+    },
+    faq: {
+      title: 'Preguntas Frecuentes',
+      q1: '¿Qué formatos de archivo soportan?',
+      a1: 'Soportamos todos los formatos de imagen comunes, incluyendo JPG, PNG y WEBP.',
+      q2: '¿Hay un límite de resolución?',
+      a2: 'Puedes subir imágenes de hasta 12 megapíxeles.',
+      q3: '¿Cómo manejan mi privacidad?',
+      a3: 'Todas las imágenes subidas se eliminan automáticamente de nuestros servidores en una hora.',
+      q4: '¿El Removedor de Fondo IA es realmente gratis?',
+      a4: 'Sí, completamente gratis para uso personal y comercial.',
+    },
+    result: {
+      title: '¡Procesamiento Completo!',
+      subtitle: 'Tu imagen está lista para descargar',
+      original: 'Original',
+      removed: 'Eliminado',
+      download: 'Descargar Imagen',
+      uploadNew: 'O subir una nueva imagen',
+      tip: 'La imagen descargada tendrá un fondo transparente en formato PNG.',
+    },
+    watermark: {
+      title: 'Removedor de Marca de Agua IA',
+      subtitle: 'Usa nuestra tecnología IA avanzada para eliminar fácilmente marcas de agua, logos y manchas.',
+      uploadPrompt: 'Seleccionar archivo o arrastrar aquí',
+      uploadHint: 'Formatos soportados: JPG, JPEG, PNG, WebP (Máx 10 MB)',
+      processing: 'Procesando imagen...',
+      processingHint: 'Esto puede tomar unos segundos',
+      beforeLabel: 'Original',
+      afterLabel: 'Resultado',
+      download: 'Descargar Imagen',
+      uploadNew: 'Subir Nuevo',
+      downloadError: 'Error en la descarga, por favor intente de nuevo',
+    },
+    footer: {
+      copyright: '© 2025 Removedor de Fondo IA. Todos los derechos reservados.',
+      privacy: 'Política de Privacidad',
+      terms: 'Términos de Servicio',
+    },
+  },
+  'pt': {
+    name: 'Português',
+    flag: '🇵🇹',
+    header: { title: 'Removedor de Fundo IA' },
+    navigation: {
+      backgroundRemover: 'Fundo',
+      watermarkRemover: 'Marca d\'Água',
+    },
+    home: {
+      heroTitle: 'Remova Instantaneamente. Impulsionado por IA.',
+      heroSubtitle: 'Automático, Gratuito, Alta Qualidade. Arraste e solte imagens para fundos limpos.',
+      uploadPrompt: 'Selecionar arquivo ou arrastar aqui',
+      uploadHint: 'Formatos suportados: JPG, PNG, WEBP (Máx 16MB)',
+      processing: 'Processando imagem...',
+      processingHint: 'Isso pode levar alguns segundos',
+      dropToUpload: '📥 Soltar para enviar',
+    },
+    errors: {
+      invalidFileType: 'Por favor selecione um arquivo de imagem válido (JPG, PNG ou WEBP)',
+      fileTooLarge: 'O arquivo é muito grande. Tamanho máximo: 16MB',
+      processingFailed: 'Falha ao processar a imagem. Por favor tente novamente',
+      networkError: 'Erro de rede. Por favor verifique sua conexão',
+      serverError: 'Erro do servidor. Por favor tente mais tarde',
+      apiKeyMissing: 'A chave API não está configurada. Por favor contate o administrador',
+    },
+    howItWorks: {
+      title: 'Como remover o fundo de uma imagem',
+      step1Title: 'Carregar Imagem',
+      step1Desc: 'Selecione uma foto do seu dispositivo ou simplesmente arraste-a para a área de upload.',
+      step2Title: 'Processamento IA',
+      step2Desc: 'Nossa poderosa IA detectará automaticamente o assunto e removerá o fundo.',
+      step3Title: 'Baixar Resultado',
+      step3Desc: 'Obtenha uma imagem de alta qualidade com fundo transparente, pronta para ser usada em qualquer lugar.',
+    },
+    features: {
+      title: 'O que o Removedor de Fundo IA pode fazer por você?',
+      subtitle: 'O Removedor de Fundo IA ajuda você a criar imagens impressionantes para qualquer propósito.',
+      ecommerceTitle: 'Para E-commerce',
+      ecommerceDesc: 'Crie fotos de produtos profissionais com fundos brancos e limpos que vendem.',
+      creativesTitle: 'Para Criativos',
+      creativesDesc: 'Isole assuntos de seu fundo para criar composições e designs atraentes.',
+    },
+    whyChoose: {
+      title: 'Por que escolher o Removedor de Fundo IA?',
+      quality: 'Resultados de Alta Qualidade',
+      qualityDesc: 'Nossa IA é treinada para lidar com bordas complexas como cabelo e pelo.',
+      free: 'Completamente Gratuito',
+      freeDesc: 'Remova fundos de qualquer imagem sem custo. Sem assinaturas, sem taxas ocultas.',
+      privacy: 'Focado em Privacidade',
+      privacyDesc: 'Suas imagens são processadas com segurança e excluídas automaticamente de nossos servidores.',
+    },
+    faq: {
+      title: 'Perguntas Frequentes',
+      q1: 'Quais formatos de arquivo vocês suportam?',
+      a1: 'Suportamos todos os formatos de imagem comuns, incluindo JPG, PNG e WEBP.',
+      q2: 'Há um limite de resolução?',
+      a2: 'Você pode carregar imagens de até 12 megapixels.',
+      q3: 'Como vocês lidam com minha privacidade?',
+      a3: 'Todas as imagens carregadas são automaticamente excluídas de nossos servidores em uma hora.',
+      q4: 'O Removedor de Fundo IA é realmente gratuito?',
+      a4: 'Sim, completamente gratuito para uso pessoal e comercial.',
+    },
+    result: {
+      title: 'Processamento Completo!',
+      subtitle: 'Sua imagem está pronta para download',
+      original: 'Original',
+      removed: 'Removido',
+      download: 'Baixar Imagem',
+      uploadNew: 'Ou carregar uma nova imagem',
+      tip: 'A imagem baixada terá um fundo transparente no formato PNG.',
+    },
+    watermark: {
+      title: 'Removedor de Marca d\'Água IA',
+      subtitle: 'Use nossa tecnologia IA avançada para remover facilmente marcas d\'água, logotipos e manchas.',
+      uploadPrompt: 'Selecionar arquivo ou arrastar aqui',
+      uploadHint: 'Formatos suportados: JPG, JPEG, PNG, WebP (Máx 10 MB)',
+      processing: 'Processando imagem...',
+      processingHint: 'Isso pode levar alguns segundos',
+      beforeLabel: 'Original',
+      afterLabel: 'Resultado',
+      download: 'Baixar Imagem',
+      uploadNew: 'Carregar Novo',
+      downloadError: 'Falha no download, por favor tente novamente',
+    },
+    footer: {
+      copyright: '© 2025 Removedor de Fundo IA. Todos os direitos reservados.',
+      privacy: 'Política de Privacidade',
+      terms: 'Termos de Serviço',
     },
   },
   'ja': {
     name: '日本語',
     flag: '🇯🇵',
-    header: {
-      title: 'AI背景除去',
+    header: { title: 'AI 背景除去' },
+    navigation: {
+      backgroundRemover: '背景',
+      watermarkRemover: '透かし',
     },
     home: {
-      heroTitle: '即座に削除。AIパワー。',
-      heroSubtitle: '自動、無料、高品質。画像をドラッグ＆ドロップして透明な背景を作成。',
+      heroTitle: '瞬時に除去。AI駆動。',
+      heroSubtitle: '自動、無料、高品質。画像をドラッグ＆ドロップして背景をクリアに。',
       uploadPrompt: 'ファイルを選択またはここにドラッグ',
       uploadHint: '対応形式：JPG、PNG、WEBP（最大16MB）',
       processing: '画像を処理中...',
       processingHint: '数秒かかる場合があります',
+      dropToUpload: '📥 ドロップしてアップロード',
     },
     errors: {
-      invalidFileType: '有効な画像ファイルを選択してください（JPG、PNG、WEBP）',
-      fileTooLarge: 'ファイルが大きすぎます。最大16MBまで',
-      processingFailed: '画像処理に失敗しました。もう一度お試しください',
+      invalidFileType: '有効な画像ファイル（JPG、PNG、またはWEBP）を選択してください',
+      fileTooLarge: 'ファイルが大きすぎます。最大サイズ：16MB',
+      processingFailed: '画像の処理に失敗しました。もう一度お試しください',
       networkError: 'ネットワークエラー。接続を確認してください',
       serverError: 'サーバーエラー。後でもう一度お試しください',
       apiKeyMissing: 'APIキーが設定されていません。管理者に連絡してください',
     },
     howItWorks: {
-      title: '画像の背景を削除する方法',
+      title: '画像の背景を除去する方法',
       step1Title: '画像をアップロード',
-      step1Desc: 'デバイスから写真を選択するか、アップロードエリアにドラッグ＆ドロップしてください。',
+      step1Desc: 'デバイスから写真を選択するか、アップロードエリアにドラッグ＆ドロップします。',
       step2Title: 'AI処理',
-      step2Desc: '強力なAIが自動的に被写体を検出し、背景を削除します。',
+      step2Desc: '強力なAIが自動的に被写体を検出し、背景を除去します。',
       step3Title: '結果をダウンロード',
       step3Desc: '透明な背景を持つ高品質な画像を取得し、どこでも使用できます。',
     },
     features: {
-      title: 'AI背景除去ツールがあなたのためにできること',
-      subtitle: 'AI背景除去は、オンラインストア、ソーシャルメディア、個人プロジェクトなど、あらゆる目的で素晴らしいビジュアルを作成するのに役立ちます。',
+      title: 'AI背景除去ツールができること',
+      subtitle: 'AI背景除去ツールは、オンラインストア、ソーシャルメディア、個人プロジェクトなど、あらゆる目的のための素晴らしいビジュアルの作成を支援します。',
       ecommerceTitle: 'Eコマース向け',
-      ecommerceDesc: 'クリーンな白い背景でプロフェッショナルな商品写真を作成します。最高の形で商品を提示することで、コンバージョン率を向上させます。',
+      ecommerceDesc: 'クリーンな白い背景で販売につながる専門的な製品写真を作成します。',
       creativesTitle: 'クリエイター向け',
-      creativesDesc: '背景から被写体を分離して、魅力的な構図とデザインを作成します。ポスター、ソーシャルメディアの投稿、個人的なアートプロジェクトに最適です。',
+      creativesDesc: '背景から被写体を分離し、魅力的な構図とデザインを作成します。',
     },
     whyChoose: {
-      title: 'AI背景除去を選ぶ理由',
+      title: 'AI背景除去ツールを選ぶ理由',
       quality: '高品質な結果',
-      qualityDesc: '当社のAIは、髪や毛皮のような複雑なエッジを処理するようにトレーニングされており、毎回鮮明なカットアウトを提供します。',
+      qualityDesc: '私たちのAIは、髪や毛皮のような複雑なエッジを処理するようにトレーニングされています。',
       free: '完全無料',
-      freeDesc: 'どんな画像も無料で背景を削除できます。サブスクリプションなし、隠れた料金なし。',
+      freeDesc: 'あらゆる画像から無料で背景を除去できます。サブスクリプションなし、隠れた料金なし。',
       privacy: 'プライバシー重視',
-      privacyDesc: 'お客様の画像は安全に処理され、当社のサーバーから自動的に削除されます。',
+      privacyDesc: 'あなたの画像は安全に処理され、サーバーから自動的に削除されます。',
     },
     faq: {
       title: 'よくある質問',
       q1: 'どのファイル形式をサポートしていますか？',
-      a1: 'JPG、PNG、WEBPを含むすべての一般的な画像形式をサポートしています。最良の結果を得るために、高解像度の画像をアップロードすることをお勧めします。',
+      a1: 'JPG、PNG、WEBPを含むすべての一般的な画像形式をサポートしています。',
       q2: '解像度の制限はありますか？',
-      a2: '最大12メガピクセルの画像をアップロードできます。ダウンロードされた画像は、元の画像と同じ解像度になります。',
-      q3: 'プライバシーをどのように扱いますか？',
-      a3: 'お客様のプライバシーを非常に重視しています。アップロードされたすべての画像は、処理後1時間以内に当社のサーバーから自動的に削除されます。',
-      q4: 'AI背景除去は本当に無料ですか？',
-      a4: 'はい、AI背景除去は個人および商用利用において完全に無料です。隠れたコストや使用制限はありません。',
+      a2: '最大12メガピクセルの画像をアップロードできます。',
+      q3: 'プライバシーはどのように扱われますか？',
+      a3: 'アップロードされたすべての画像は、1時間以内にサーバーから自動的に削除されます。',
+      q4: 'AI背景除去ツールは本当に無料ですか？',
+      a4: 'はい、個人利用および商業利用で完全に無料です。',
     },
     result: {
       title: '処理完了！',
       subtitle: '画像のダウンロード準備ができました',
       original: 'オリジナル',
-      removed: '背景削除',
+      removed: '除去済み',
       download: '画像をダウンロード',
       uploadNew: 'または新しい画像をアップロード',
-      tip: 'ダウンロードされた画像は、PNG形式の透明な背景を持ち、デザインプロジェクト、プレゼンテーション、オンラインストアでの使用に最適です。',
+      tip: 'ダウンロードされた画像はPNG形式の透明な背景になります。',
+    },
+    watermark: {
+      title: 'AI 透かし除去ツール',
+      subtitle: '先進的なAI技術を使用して、透かし、ロゴ、汚れを簡単に除去します。',
+      uploadPrompt: 'ファイルを選択またはここにドラッグ',
+      uploadHint: '対応形式：JPG、JPEG、PNG、WebP（最大10MB）',
+      processing: '画像を処理中...',
+      processingHint: '数秒かかる場合があります',
+      beforeLabel: 'オリジナル',
+      afterLabel: '結果',
+      download: '画像をダウンロード',
+      uploadNew: '新規アップロード',
+      downloadError: 'ダウンロードに失敗しました。もう一度お試しください',
     },
     footer: {
-      copyright: '© 2025 AI背景除去。無断転載を禁じます。',
+      copyright: '© 2025 AI背景除去ツール。無断転載を禁じます。',
       privacy: 'プライバシーポリシー',
       terms: '利用規約',
     },
   },
 };
 
-/**
- * AI Background Remover
- * 单文件 React 应用
- * 
- * 组件结构:
- * - App (主组件，状态管理)
- *   - Header
- *   - HomePage (view === 'home')
- *     - HeroUploader
- *     - HowItWorks
- *     - Features
- *     - WhyChooseUs
- *     - FAQ
- *   - ResultPage (view === 'result')
- *   - Footer
- */
-
 // ============================================================================
 // Header 组件
 // ============================================================================
-function Header({ onLogoClick, language, setLanguage, translations }) {
+function Header({ onLogoClick, language, setLanguage, translations, currentPath }) {
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const currentLang = translations[language];
   const langMenuRef = React.useRef(null);
 
-  // 点击外部关闭菜单
   React.useEffect(() => {
     const handleClickOutside = (event) => {
       if (langMenuRef.current && !langMenuRef.current.contains(event.target)) {
@@ -434,7 +571,6 @@ function Header({ onLogoClick, language, setLanguage, translations }) {
   const handleLanguageChange = (lang) => {
     setLanguage(lang);
     setIsLangMenuOpen(false);
-    // 保存到 localStorage
     localStorage.setItem('ai-bg-remover-language', lang);
   };
 
@@ -442,7 +578,6 @@ function Header({ onLogoClick, language, setLanguage, translations }) {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background-light/80 backdrop-blur-sm">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-center justify-between border-b border-gray-200 h-16">
-          {/* Logo 区域 - 可点击返回主页 */}
           <div 
             className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
             onClick={onLogoClick}
@@ -450,7 +585,6 @@ function Header({ onLogoClick, language, setLanguage, translations }) {
             tabIndex={0}
             onKeyPress={(e) => e.key === 'Enter' && onLogoClick()}
           >
-            {/* Logo SVG */}
             <svg 
               fill="currentColor" 
               height="24" 
@@ -461,12 +595,33 @@ function Header({ onLogoClick, language, setLanguage, translations }) {
             >
               <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" />
             </svg>
-            <h2 className="text-text-main text-xl font-semibold">AI BG Remover</h2>
+            <h2 className="text-text-main text-xl font-semibold">AI Remover</h2>
           </div>
 
-          {/* 右侧工具栏 */}
+          <nav className="flex items-center gap-2">
+            <Link 
+              to="/"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                currentPath === '/' 
+                  ? 'bg-primary text-white' 
+                  : 'text-text-secondary hover:bg-gray-200'
+              }`}
+            >
+              {currentLang.navigation.backgroundRemover}
+            </Link>
+            <Link 
+              to="/watermark"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                currentPath === '/watermark' 
+                  ? 'bg-primary text-white' 
+                  : 'text-text-secondary hover:bg-gray-200'
+              }`}
+            >
+              {currentLang.navigation.watermarkRemover}
+            </Link>
+          </nav>
+
           <div className="flex items-center gap-4">
-            {/* 语言选择器 - 带下拉菜单 */}
             <div className="relative" ref={langMenuRef}>
               <button 
                 className="flex items-center gap-2 rounded-lg h-9 px-3 text-text-secondary hover:bg-gray-200 transition-colors"
@@ -485,7 +640,6 @@ function Header({ onLogoClick, language, setLanguage, translations }) {
                 </svg>
               </button>
 
-              {/* 下拉菜单 */}
               {isLangMenuOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                   {Object.keys(translations).map((lang) => (
@@ -508,597 +662,10 @@ function Header({ onLogoClick, language, setLanguage, translations }) {
                 </div>
               )}
             </div>
-            {/* 注意: 历史记录按钮已按要求移除 */}
           </div>
         </div>
       </div>
     </header>
-  );
-}
-
-// ============================================================================
-// HomePage 组件及其子组件
-// ============================================================================
-
-/**
- * HomePage - 主着陆页
- */
-function HomePage({ isLoading, setIsLoading, setOriginalImage, setProcessedImage, setView, t }) {
-  return (
-    <>
-      <HeroUploader 
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-        setOriginalImage={setOriginalImage}
-        setProcessedImage={setProcessedImage}
-        setView={setView}
-        t={t}
-      />
-      <HowItWorks t={t} />
-      <Features t={t} />
-      <WhyChooseUs t={t} />
-      <FAQ t={t} />
-    </>
-  );
-}
-
-/**
- * HeroUploader - 主上传区域（核心功能）
- */
-function HeroUploader({ isLoading, setIsLoading, setOriginalImage, setProcessedImage, setView, t }) {
-  const fileInputRef = React.useRef(null);
-  const [errorMessage, setErrorMessage] = React.useState(null);
-
-  /**
-   * 根据错误类型返回友好的错误消息
-   */
-  const getErrorMessage = (error) => {
-    const message = error.message || error.detail || '';
-    
-    // 检查特定错误类型
-    if (message.includes('API key') || message.includes('AI302_API_KEY')) {
-      return t.errors.apiKeyMissing;
-    }
-    if (message.includes('too large') || message.includes('16MB')) {
-      return t.errors.fileTooLarge;
-    }
-    if (message.includes('network') || message.includes('connect')) {
-      return t.errors.networkError;
-    }
-    if (message.includes('timeout') || message.includes('timed out')) {
-      return t.errors.serverError;
-    }
-    if (message.includes('503') || message.includes('504') || message.includes('500')) {
-      return t.errors.serverError;
-    }
-    
-    // 默认错误消息
-    return t.errors.processingFailed;
-  };
-
-  /**
-   * 核心文件处理逻辑 - 按照设计规范的 8 个步骤
-   */
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    // 清除之前的错误
-    setErrorMessage(null);
-
-    // 验证文件类型
-    if (!file.type.startsWith('image/')) {
-      setErrorMessage(t.errors.invalidFileType);
-      return;
-    }
-
-    // 验证文件大小 (16MB)
-    const MAX_SIZE = 16 * 1024 * 1024;
-    if (file.size > MAX_SIZE) {
-      setErrorMessage(t.errors.fileTooLarge);
-      return;
-    }
-
-    try {
-      // 步骤 1: 开始加载
-      setIsLoading(true);
-      setErrorMessage(null);
-      console.log('📤 开始上传:', file.name);
-
-      // 步骤 2: 创建本地预览 URL
-      const localUrl = URL.createObjectURL(file);
-      setOriginalImage(localUrl);
-      console.log('✓ 本地预览已创建');
-
-      // 步骤 3: 准备 FormData
-      const formData = new FormData();
-      formData.append('image_file', file);
-      console.log('✓ FormData 已准备');
-
-      // 步骤 4: 发送到后端
-      console.log('🚀 发送请求到后端...');
-      const response = await fetch(`${API_BASE_URL}/api/remove-background`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      // 步骤 5: 处理响应
-      console.log('📥 响应状态:', response.status);
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
-        throw errorData;
-      }
-
-      const data = await response.json();
-      console.log('✓ 响应数据:', data);
-
-      // 步骤 6: 设置处理后的图片 URL
-      // 如果返回的是完整URL（以http开头），直接使用；否则拼接API_BASE_URL
-      const processedUrl = data.processed_url.startsWith('http') 
-        ? data.processed_url 
-        : `${API_BASE_URL}${data.processed_url}`;
-      setProcessedImage(processedUrl);
-      console.log('✓ 处理后的图片 URL:', processedUrl);
-
-      // 步骤 7: 切换到结果视图
-      setView('result');
-      console.log('✓ 切换到结果页');
-
-    } catch (err) {
-      console.error('❌ 错误:', err);
-      const friendlyMessage = getErrorMessage(err);
-      setErrorMessage(friendlyMessage);
-    } finally {
-      // 步骤 8: 结束加载
-      setIsLoading(false);
-      console.log('✓ 处理完成');
-      
-      // 重置文件输入
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-    }
-  };
-
-  /**
-   * 点击上传区域打开文件选择器
-   */
-  const handleClick = () => {
-    if (!isLoading && fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  return (
-    <section className="text-center py-20 lg:py-32 px-6">
-      <h1 className="text-4xl md:text-6xl font-bold text-text-main tracking-tight">
-        {t.home.heroTitle}
-      </h1>
-      <h2 className="mt-4 max-w-2xl mx-auto text-lg text-text-secondary">
-        {t.home.heroSubtitle}
-      </h2>
-      
-      <div className="mt-10 max-w-2xl mx-auto">
-        {/* 错误提示框 */}
-        {errorMessage && (
-          <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3 animate-shake">
-            <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
-            <div className="flex-1 text-left">
-              <p className="text-red-800 font-medium">{errorMessage}</p>
-            </div>
-            <button 
-              onClick={() => setErrorMessage(null)}
-              className="text-red-400 hover:text-red-600 transition-colors"
-              aria-label="关闭"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </button>
-          </div>
-        )}
-
-        {/* 文件上传区域 */}
-        <div 
-          className={`drag-area flex flex-col items-center justify-center h-64 rounded-lg bg-white p-8 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-primary'}`}
-          onClick={handleClick}
-          role="button"
-          tabIndex={0}
-          onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleClick()}
-        >
-          {isLoading ? (
-            <>
-              <div className="loading-spinner w-12 h-12 border-4 border-gray-200 border-t-primary rounded-full"></div>
-              <p className="mt-4 text-text-secondary font-medium">{t.home.processing}</p>
-              <p className="mt-2 text-sm text-text-secondary">{t.home.processingHint}</p>
-            </>
-          ) : (
-            <>
-              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-              </svg>
-              <p className="mt-4 text-text-secondary">{t.home.uploadPrompt}</p>
-              <p className="mt-2 text-sm text-text-secondary">{t.home.uploadHint}</p>
-            </>
-          )}
-          
-          {/* 隐藏的文件输入 */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-            disabled={isLoading}
-          />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/**
- * HowItWorks - 三步骤说明
- */
-function HowItWorks({ t }) {
-  const steps = [
-    {
-      icon: (
-        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-        </svg>
-      ),
-      title: t.howItWorks.step1Title,
-      description: t.howItWorks.step1Desc
-    },
-    {
-      icon: (
-        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      ),
-      title: t.howItWorks.step2Title,
-      description: t.howItWorks.step2Desc
-    },
-    {
-      icon: (
-        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-        </svg>
-      ),
-      title: t.howItWorks.step3Title,
-      description: t.howItWorks.step3Desc
-    }
-  ];
-
-  return (
-    <section className="py-20 lg:py-24 bg-white" aria-labelledby="how-it-works-heading">
-      <div className="max-w-6xl mx-auto px-6">
-        <h2 id="how-it-works-heading" className="text-3xl md:text-4xl font-bold text-center text-text-main">
-          {t.howItWorks.title}
-        </h2>
-        <ol className="mt-12 grid md:grid-cols-3 gap-12 text-center list-none">
-          {steps.map((step, index) => (
-            <li key={index} className="flex flex-col items-center">
-              <div className="text-primary" aria-hidden="true">{step.icon}</div>
-              <h3 className="mt-4 text-xl font-semibold text-text-main">{step.title}</h3>
-              <p className="mt-2 text-text-secondary">{step.description}</p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
-/**
- * Features - 电商和创意示例
- */
-function Features({ t }) {
-  return (
-    <section className="py-20 lg:py-24 bg-background-light">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-text-main">
-            {t.features.title}
-          </h2>
-          <p className="mt-4 max-w-3xl mx-auto text-lg text-text-secondary">
-            {t.features.subtitle}
-          </p>
-        </div>
-
-        <div className="mt-16 space-y-20">
-          {/* E-commerce 示例 */}
-          <article className="flex flex-col md:flex-row items-center gap-12">
-            <div className="md:w-1/2">
-              <h3 className="text-2xl md:text-3xl font-bold text-text-main">{t.features.ecommerceTitle}</h3>
-              <p className="mt-4 text-lg text-text-secondary">
-                {t.features.ecommerceDesc}
-              </p>
-            </div>
-            <figure className="md:w-1/2">
-              <div className="relative w-full aspect-square rounded-lg shadow-lg border border-gray-200 overflow-hidden">
-                {/* 棋盘格背景 - 展示透明效果 */}
-                <div className="absolute inset-0 checkerboard-bg" aria-hidden="true"></div>
-                <img 
-                  src={test1Image} 
-                  alt="Professional product with clean background removed for e-commerce" 
-                  loading="lazy"
-                  width="800"
-                  height="800"
-                  className="relative w-full h-full object-contain p-8"
-                />
-              </div>
-            </figure>
-          </article>
-
-          {/* Creatives 示例 */}
-          <article className="flex flex-col md:flex-row-reverse items-center gap-12">
-            <div className="md:w-1/2">
-              <h3 className="text-2xl md:text-3xl font-bold text-text-main">{t.features.creativesTitle}</h3>
-              <p className="mt-4 text-lg text-text-secondary">
-                {t.features.creativesDesc}
-              </p>
-            </div>
-            <figure className="md:w-1/2">
-              <div className="w-full aspect-video rounded-lg shadow-lg overflow-hidden bg-white border border-gray-200">
-                <img 
-                  src={test2Image} 
-                  alt="Creative design with removed background for posters and social media" 
-                  loading="lazy"
-                  width="1200"
-                  height="675"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </figure>
-          </article>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/**
- * WhyChooseUs - 三个特性
- */
-function WhyChooseUs({ t }) {
-  const features = [
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      title: t.whyChoose.quality,
-      description: t.whyChoose.qualityDesc
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      title: t.whyChoose.free,
-      description: t.whyChoose.freeDesc
-    },
-    {
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-        </svg>
-      ),
-      title: t.whyChoose.privacy,
-      description: t.whyChoose.privacyDesc
-    }
-  ];
-
-  return (
-    <section className="py-20 lg:py-24 bg-white">
-      <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-text-main">
-          {t.whyChoose.title}
-        </h2>
-        <div className="mt-12 grid md:grid-cols-3 gap-x-12 gap-y-16">
-          {features.map((feature, index) => (
-            <div key={index} className="flex gap-4">
-              <div className="flex-shrink-0 text-primary mt-1">
-                {feature.icon}
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-text-main">{feature.title}</h3>
-                <p className="mt-2 text-text-secondary">{feature.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/**
- * FAQ - 常见问题
- */
-function FAQ({ t }) {
-  const faqs = [
-    {
-      question: t.faq.q1,
-      answer: t.faq.a1
-    },
-    {
-      question: t.faq.q2,
-      answer: t.faq.a2
-    },
-    {
-      question: t.faq.q3,
-      answer: t.faq.a3
-    },
-    {
-      question: t.faq.q4,
-      answer: t.faq.a4
-    }
-  ];
-
-  return (
-    <section className="py-20 lg:py-24 bg-background-light">
-      <div className="max-w-3xl mx-auto px-6">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-text-main">
-          {t.faq.title}
-        </h2>
-        <div className="mt-10 space-y-4">
-          {faqs.map((faq, index) => (
-            <details key={index} className="group bg-white p-5 rounded-lg shadow-sm">
-              <summary className="flex justify-between items-center cursor-pointer font-semibold text-text-main list-none">
-                {faq.question}
-                <span className="ml-4 flex-shrink-0 text-2xl text-gray-400 group-open:rotate-45 transition-transform">
-                  +
-                </span>
-              </summary>
-              <p className="mt-4 text-text-secondary">{faq.answer}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============================================================================
-// ResultPage 组件
-// ============================================================================
-
-/**
- * ResultPage - 结果展示页
- * 显示原始图片和处理后的图片对比，提供下载功能
- */
-function ResultPage({ originalImage, processedImage, onUploadNew, t }) {
-  // 处理下载 - 支持跨域图片下载
-  const handleDownload = async () => {
-    try {
-      console.log('📥 开始下载图片:', processedImage);
-      
-      // 如果是外部URL（302.AI），使用fetch下载
-      if (processedImage.startsWith('http')) {
-        const response = await fetch(processedImage);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'ai-bg-remover-result.png';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-        console.log('✅ 下载完成');
-      } else {
-        // 如果是本地URL，直接下载
-        const a = document.createElement('a');
-        a.href = processedImage;
-        a.download = 'ai-bg-remover-result.png';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        console.log('✅ 下载完成');
-      }
-    } catch (error) {
-      console.error('❌ 下载失败:', error);
-      // 降级方案：在新标签页打开
-      window.open(processedImage, '_blank');
-    }
-  };
-
-  return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-160px)] py-12 px-6">
-      <div className="w-full max-w-4xl mx-auto">
-        <div className="bg-white rounded-3xl shadow-lg p-8 sm:p-12">
-          {/* 标题 */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-text-main">{t.result.title}</h1>
-            <p className="mt-2 text-text-secondary">{t.result.subtitle}</p>
-          </div>
-
-          {/* 图片对比网格 */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-            {/* 原始图片 */}
-            <div>
-              <p className="text-center text-text-secondary font-medium mb-3">{t.result.original}</p>
-              <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100 border border-gray-200">
-                {originalImage ? (
-                  <img
-                    src={originalImage}
-                    alt="Original"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <p className="text-gray-400">No image</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* 处理后图片 */}
-            <div>
-              <p className="text-center text-text-secondary font-medium mb-3">{t.result.removed}</p>
-              <div className="aspect-square rounded-2xl overflow-hidden border border-gray-200 relative">
-                {/* 棋盘格背景 - 显示透明效果 */}
-                <div className="absolute inset-0 checkerboard-bg"></div>
-                {processedImage ? (
-                  <img
-                    src={processedImage}
-                    alt="Background Removed"
-                    className="relative w-full h-full object-contain"
-                  />
-                ) : (
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    <p className="text-gray-400">{t.home.processing}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* 操作按钮 */}
-          <div className="text-center space-y-4">
-            {/* 下载按钮 */}
-            <div>
-              <button
-                onClick={handleDownload}
-                className="inline-block bg-primary text-white font-semibold py-3 px-10 rounded-xl hover:bg-opacity-90 transition-opacity shadow-lg"
-              >
-                {t.result.download}
-              </button>
-            </div>
-
-            {/* 上传新图片链接 */}
-            <p>
-              <button
-                onClick={onUploadNew}
-                className="text-primary hover:underline font-medium"
-              >
-                {t.result.uploadNew}
-              </button>
-            </p>
-          </div>
-
-          {/* 提示信息 */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <div className="flex items-start gap-3 text-sm text-text-secondary">
-              <svg className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <p>
-                {t.result.tip}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -1134,50 +701,33 @@ function Footer({ t }) {
 // ============================================================================
 const GlobalStyles = () => (
   <style>{`
-    /* 棋盘格背景 - 用于显示透明图片 */
     .checkerboard-bg {
-      background-image: 
-        repeating-conic-gradient(
-          #E0E0E0 0% 25%, 
-          #FFFFFF 0% 50%
-        );
+      background-image: repeating-conic-gradient(#E0E0E0 0% 25%, #FFFFFF 0% 50%);
       background-size: 20px 20px;
       background-position: 0 0, 10px 10px;
     }
-
-    /* 拖拽区域样式 */
     .drag-area {
       border: 2px dashed #D1D1D6;
       transition: all 0.3s ease-in-out;
     }
-
-    .drag-area:hover,
-    .drag-area.drag-over {
+    .drag-area:hover, .drag-area.drag-over {
       border-color: #007AFF;
       background-color: rgba(0, 122, 255, 0.05);
     }
-
-    /* 加载动画 */
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-
     .loading-spinner {
       animation: spin 1s linear infinite;
     }
-
-    /* 错误提示摇晃动画 */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
       20%, 40%, 60%, 80% { transform: translateX(4px); }
     }
-
     .animate-shake {
       animation: shake 0.5s ease-in-out;
     }
-
-    /* 平滑过渡 */
     * {
       transition: background-color 0.2s ease, border-color 0.2s ease;
     }
@@ -1188,97 +738,48 @@ const GlobalStyles = () => (
 // 主应用组件
 // ============================================================================
 function App() {
-  // ========================================
-  // 状态管理
-  // ========================================
-  const [view, setView] = useState('home'); // 'home' | 'result'
-  const [originalImage, setOriginalImage] = useState(null); // 本地 URL
-  const [processedImage, setProcessedImage] = useState(null); // 服务器 URL
-  const [isLoading, setIsLoading] = useState(false);
-  
-  // 从 localStorage 加载保存的语言，默认为英文
   const [language, setLanguage] = useState(() => {
     const saved = localStorage.getItem('ai-bg-remover-language');
     return saved && translations[saved] ? saved : 'en';
   });
   
-  // 获取当前语言的翻译
   const t = translations[language];
 
-  // ========================================
-  // 事件处理函数
-  // ========================================
+  return (
+    <BrowserRouter>
+      <AppContent language={language} setLanguage={setLanguage} t={t} translations={translations} />
+    </BrowserRouter>
+  );
+}
+
+function AppContent({ language, setLanguage, t, translations }) {
+  const location = useLocation();
+  const navigate = useNavigate();
   
-  /**
-   * 处理 Logo 点击 - 返回主页
-   */
   const handleLogoClick = () => {
-    // 清理之前的 URL
-    if (originalImage) {
-      URL.revokeObjectURL(originalImage);
-    }
-    
-    // 重置状态
-    setOriginalImage(null);
-    setProcessedImage(null);
-    setView('home');
+    navigate('/');
   };
 
-  /**
-   * 处理上传新图片 - 从结果页返回主页
-   */
-  const handleUploadNew = () => {
-    // 清理之前的 URL
-    if (originalImage) {
-      URL.revokeObjectURL(originalImage);
-    }
-    
-    // 重置状态
-    setOriginalImage(null);
-    setProcessedImage(null);
-    setView('home');
-  };
-
-  // ========================================
-  // 渲染
-  // ========================================
   return (
     <>
       <SEO language={language} />
       <GlobalStyles />
       <div className="min-h-screen bg-background-light font-display flex flex-col">
-        {/* Header 组件 */}
         <Header 
           onLogoClick={handleLogoClick} 
           language={language}
           setLanguage={setLanguage}
           translations={translations}
+          currentPath={location.pathname}
         />
 
-        {/* 主内容区域 */}
-        <main className="flex-1 pt-16">
-          {view === 'home' && (
-            <HomePage 
-              isLoading={isLoading}
-              setIsLoading={setIsLoading}
-              setOriginalImage={setOriginalImage}
-              setProcessedImage={setProcessedImage}
-              setView={setView}
-              t={t}
-            />
-          )}
-
-          {view === 'result' && (
-            <ResultPage 
-              originalImage={originalImage}
-              processedImage={processedImage}
-              onUploadNew={handleUploadNew}
-              t={t}
-            />
-          )}
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<BackgroundRemover t={t} />} />
+            <Route path="/watermark" element={<WatermarkRemover t={t} />} />
+          </Routes>
         </main>
 
-        {/* Footer 组件 */}
         <Footer t={t} />
       </div>
     </>

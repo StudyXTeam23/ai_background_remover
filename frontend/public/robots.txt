@@ -1,15 +1,27 @@
-# robots.txt for AI Background Remover
-
-# Allow all bots to crawl the site
+# https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /results/
 
-# Disallow processing images (to save crawl budget)
-Disallow: /static/results/
-
-# Sitemap location
+# Sitemap
 Sitemap: https://www.airemover.im/sitemap.xml
 
-# Crawl rate limit (optional, for considerate crawling)
+# Crawl-delay for polite bots
 Crawl-delay: 1
 
+# Popular search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /

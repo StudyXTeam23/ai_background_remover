@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/remove-background.js": {
-      "maxDuration": 300
-    }
-  },
   "headers": [
     {
       "source": "/api/(.*)",
@@ -21,6 +16,20 @@
           "value": "X-Requested-With, Content-Type, Authorization"
         }
       ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/remove-background",
+      "destination": "http://13.52.175.51:18181/api/remove-background"
+    },
+    {
+      "source": "/api/dewatermark",
+      "destination": "http://13.52.175.51:18181/api/dewatermark"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
